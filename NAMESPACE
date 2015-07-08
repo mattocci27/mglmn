@@ -1,0 +1,9 @@
+export(best.vars,
+	make.formula,
+	maglm,
+	mamglm,
+	ses.maglm,
+	ses.mamglm
+	)
+
+import(mvabund,snowfall)
