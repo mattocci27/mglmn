@@ -2,13 +2,13 @@
 \alias{mamglmm}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Model averaging for multivariate generalized linear models
+Model averaging for multivariate generalized linear mixed models
 }
 \description{
-Model averaging for multivariate GLM based on information theory.
+Model averaging for multivariate GLMM based on information theory.
 }
 \usage{
-mamglmm(data, y, family, scale = TRUE, AIC.restricted = FALSE)
+mamglmm(data, y, rand_intercept, family, scale = TRUE, AIC.restricted = FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
