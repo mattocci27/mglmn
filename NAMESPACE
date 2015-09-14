@@ -2,6 +2,7 @@ export(best.vars,
 	make.formula,
 	maglm,
 	mamglm,
+	mamglmm,
 	ses.maglm,
 	ses.mamglm
 	)
