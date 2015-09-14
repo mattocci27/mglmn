@@ -22,6 +22,12 @@ vars<-list()
 k <- 0
 vars2<-matrix(numeric(n.vars*sum(temp)),nrow=sum(temp),ncol=n.vars)
 
+my.glmm <- function(f.str,data, family=family){
+	res <- glmer(f.str, data, family=family)
+	# res[[1]]
+	res.aic <- AIC(res)	# res$aic	
+}
+
 #number of paremeter = i+1 (one means intercept)
 #sample size = nrow(data)
 #AICc = -2*logLike + 2*n.para*n.sample/(n.sample-n.para-1)
