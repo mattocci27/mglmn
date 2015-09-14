@@ -22,10 +22,13 @@ vars<-list()
 k <- 0
 vars2<-matrix(numeric(n.vars*sum(temp)),nrow=sum(temp),ncol=n.vars)
 
-my.glmm <- function(f.str,data, family=family){
-	res <- glmer(f.str, data, family=family)
-	# res[[1]]
-	res.aic <- AIC(res)	# res$aic	
+my.glmm <- function(x,i,f.str,data,family){
+	# f.str2 <- noquote(paste(x, f.str))
+	# return(paste(x,"[,",i,"]",f.str,sep=""))
+	# f.str2 <- noquote(paste(x,"[,",i,"]",f.str,sep=""))
+	f.str2 <- noquote(paste(x,f.str))
+	res <- glmer(f.str2, data=data, family=family)
+	AIC(res)
 }
 
 #number of paremeter = i+1 (one means intercept)

@@ -1,5 +1,6 @@
 export(best.vars,
 	make.formula,
+	make.formula2,
 	maglm,
 	mamglm,
 	mamglmm,
