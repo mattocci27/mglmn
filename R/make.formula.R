@@ -1,12 +1,27 @@
 make.formula <-
-function(lhs, var.list){
-vars.vector <- var.list
-if (length(vars.vector) < 2)
-return(noquote(paste(lhs, '~',vars.vector)))
+function(lhs, vars.vec, rand.vec=NULL){
+if(is.null(rand.vec)) {
+	if (length(vars.vec) < 2)
+	return(noquote(paste(lhs, '~',vars.vec)))
 
-rhs <- vars.vector[1]
-for (v in vars.vector[2:length(vars.vector)])
-rhs <- paste(rhs, '+', v)
-noquote(paste(lhs, '~', rhs))
+	rhs <- vars.vec[1]
+	for (v in vars.vec[2:length(vars.vec)])
+		rhs <- paste(rhs, '+', v)
+	noquote(paste(lhs, '~', rhs))	
+} else {
+	if (length(vars.vec) < 2){
+	rhs <- vars.vec[1]	
+	for (r in rand.vec[1:length(rand.vec)])
+			rhs <- paste(rhs, ' + (1|', r,')' ,sep="")
+	return(noquote(paste(lhs, '~',vars.vec, '~', rhs)))
+	}
 
+	rhs <- vars.vec[1]
+	for (v in vars.vec[2:length(vars.vec)])
+		rhs <- paste(rhs, '+', v)
+	for (r in rand.vec[1:length(rand.vec)])
+			rhs <- paste(rhs, ' + (1|', r,')' ,sep="")
+	noquote(paste(lhs, '~', rhs))	
+	}
 }
+
