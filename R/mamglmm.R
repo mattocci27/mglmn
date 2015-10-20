@@ -22,15 +22,16 @@ vars<-list()
 k <- 0
 vars2<-matrix(numeric(n.vars*sum(temp)),nrow=sum(temp),ncol=n.vars)
 
-my.glmm <- function(x,i,f.str,data,family){
-# f.str2 <- noquote(paste(x, f.str))
-# return(paste(x,"[,",i,"]",f.str,sep=""))
-f.str2 <- noquote(paste(x,"[,",i,"]",f.str,sep=""))
-# f.str2 <- noquote(paste(x,f.str))
-# return(f.str2)
-res <- glmer(f.str2, data=data, family=family)
-AIC(res)
-}
+
+if (family=="negative.binomial") my.glmm  <- function(x,i,f.str,data,family){
+		f.str2 <- noquote(paste(x,"[,",i,"]",f.str,sep=""))
+		res <- try(glmer.nb(f.str2, data=data),silent=T) AIC(res) else NA
+} else my.glmm <- function(x,i,f.str,data,family){
+				f.str2 <- noquote(paste(x,"[,",i,"]",f.str,sep=""))
+				#suppressWarnings(res <- glmer(f.str2, data=data, family=family))
+				res <- try(glmer(f.str2, data=data, family=family),silent=T)
+				if (class(res)!="try-error")  AIC(res) else NA
+			}
 
 #number of paremeter = i+1 (one means intercept)
 #sample size = nrow(data)
@@ -49,25 +50,24 @@ for (i in 1:n.vars){
 				}
 # return(log.L.temp)
 # log.L.temp <- logLik(fit.temp)
-log.L <- c(log.L, sum(log.L.temp))
+log.L <- c(log.L, sum(log.L.temp,na.rm=T))
 
 if (AIC.restricted){
 #aic is corrected for finite sampe size
-aic.restricted <- sum(-2*log.L.temp +2*nrow(data)*(i+1)/(nrow(data)-(i+1)-1))/nrow(data)
+aic.restricted <- sum(-2*log.L.temp +2*nrow(data)*(i+1)/(nrow(data)-(i+1)-1),na.rm=T)/nrow(data)
 # aic.restricted <- sum(-2*log.L.temp +2*nrow(data)*(i+1)/(nrow(data)-(i+1)-1))
 model.aic <- c(model.aic, aic.restricted)
 } 
 else{
 # aic.unrestricted <- sum(-2*log.L.temp +2*(i+1))
-aic.unrestricted <- sum(-2*log.L.temp +2*(i+1))/nrow(data)
+aic.unrestricted <- sum(-2*log.L.temp +2*(i+1),na.rm=T)/nrow(data)
 
 model.aic <- c(model.aic, aic.unrestricted)
-} 
-
+				} 
+		}
 }
-}
 
-min.aic <- min(model.aic)
+min.aic <- min(model.aic,na.rm=T)
 delta.aic <- model.aic - min.aic
 wAIC <- exp(-delta.aic/2)/sum(exp(-delta.aic/2))
 res <- data.frame(AIC=model.aic, log.L=log.L,delta.aic, wAIC,n.vars=rep(1:n.vars,temp))
