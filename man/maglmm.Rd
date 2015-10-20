@@ -1,5 +1,5 @@
-\name{maglm}
-\alias{maglm}
+\name{maglmm}
+\alias{maglmm}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Model averaging for generalized linear models
@@ -8,7 +8,7 @@ Model averaging for generalized linear models
 Model averaging for GLM based on information theory.
 }
 \usage{
-maglm(data, y, family, scale = TRUE, AIC.restricted = FALSE)
+maglmm(data, y, rand_intercep, family, scale = TRUE, AIC.restricted = FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -67,7 +67,7 @@ adj.sr <- capcay$adj.sr
 env_sp <- capcay$env_sp
 
 #to fit a regression model:
-maglm(data=env_sp, y="adj.sr", family="gaussian",AIC.restricted=TRUE)
+#maglm(data=env_sp, y="adj.sr", family="gaussian",AIC.restricted=TRUE)
 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
