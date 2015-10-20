@@ -8,7 +8,7 @@ Model averaging for generalized linear models
 Model averaging for GLM based on information theory.
 }
 \usage{
-maglm(data, y, family, scale = TRUE, AIC.restricted = FALSE)
+maglm(data, y, rand_intercept, family, scale = TRUE, AIC.restricted = FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
