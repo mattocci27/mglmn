@@ -25,7 +25,8 @@ vars2<-matrix(numeric(n.vars*sum(temp)),nrow=sum(temp),ncol=n.vars)
 
 if (family=="negative.binomial") my.glmm  <- function(x,i,f.str,data,family){
 		f.str2 <- noquote(paste(x,"[,",i,"]",f.str,sep=""))
-		res <- try(glmer.nb(f.str2, data=data),silent=T) AIC(res) else NA
+		res <- try(glmer.nb(f.str2, data=data),silent=T) 
+		if (class(res)!="try-error") AIC(res) else NA
 } else my.glmm <- function(x,i,f.str,data,family){
 				f.str2 <- noquote(paste(x,"[,",i,"]",f.str,sep=""))
 				#suppressWarnings(res <- glmer(f.str2, data=data, family=family))
