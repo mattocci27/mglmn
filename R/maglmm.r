@@ -1,6 +1,5 @@
-maglmm <-
-function(data,y,rand_intercept,family,scale=TRUE,AIC.restricted=FALSE){
-data2 <- data 
+maglmm <- function(data,y,rand_intercept,family,scale=TRUE,AIC.restricted=FALSE){
+data2 <- data
 
 data <-  data2[,!colnames(data2) %in% (rand_intercept)]
 if(scale) data <- as.data.frame(scale(data))
@@ -24,7 +23,7 @@ vars2<-matrix(numeric(n.vars*sum(temp)),nrow=sum(temp),ncol=n.vars)
 
 if (family=="negative.binomial") my.glmm  <- function(x,f.str,data,family){
 		f.str2 <- noquote(paste(x,f.str,sep=" "))
-		res <- try(glmer.nb(f.str2, data=data),silent=T) 
+		res <- try(glmer.nb(f.str2, data=data),silent=T)
 		if (class(res)!="try-error") res else NA
 } else my.glmm <- function(x,f.str,data,family){
 				f.str2 <- noquote(paste(x,f.str,sep=" "))
@@ -43,10 +42,10 @@ vars.temp <- vars.list[[i]][,j]
 vars[[k]] <- vars.temp
 	f.str <- make.formula2(y, vars.temp, rand_intercept)
 # if (family=="gaussian") fit.temp <- manylm(f.str,data=data)
-# else 
+# else
 suppressWarnings(fit.temp <- my.glmm(y,f.str,data=data2, family=family))
 
-log.L.temp <- as.numeric(logLik(fit.temp)) 
+log.L.temp <- as.numeric(logLik(fit.temp))
 log.L <- c(log.L, sum(log.L.temp,na.rm=T))
 
 if (AIC.restricted){
@@ -54,13 +53,13 @@ if (AIC.restricted){
 aic.restricted <- sum(-2*log.L.temp +2*nrow(data)*(i+1)/(nrow(data)-(i+1)-1),na.rm=T)
 # aic.restricted <- sum(-2*log.L.temp +2*nrow(data)*(i+1)/(nrow(data)-(i+1)-1))
 model.aic <- c(model.aic, aic.restricted)
-} 
+}
 else{
 # aic.unrestricted <- sum(-2*log.L.temp +2*(i+1))
 aic.unrestricted <- sum(-2*log.L.temp +2*(i+1),na.rm=T)
 
 model.aic <- c(model.aic, aic.unrestricted)
-} 
+}
 
 }
 }
@@ -85,8 +84,8 @@ if (colnames(vars2)[j]==vars[[i]][k]) vars2[i,j] <- 1
 
 # for exmaple, i=100
 # > vars[[100]]
-# [1] "LOG..x.1..Exotic.plant.rich"          
-# [2] "P.mega.Is.p.a"                        
+# [1] "LOG..x.1..Exotic.plant.rich"
+# [2] "P.mega.Is.p.a"
 # [3] "Tot.rain.during.sampling.log..x.0.01."
 # these three paramters were used in the 100th analysis
 #
