@@ -3,6 +3,7 @@ export(best.vars,
 	make.formula2,
 	maglm,
 	mamglm,
+	maglmm,
 	mamglmm,
 	ses.maglm,
 	ses.mamglm
