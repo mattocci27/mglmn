@@ -7,7 +7,7 @@ res.obs <- mamglm(data,y=y,scale=scale, family,AIC.restricted=AIC.restricted)$im
 
 # runs<-2#
 null.env.list <-list()
-# data <- env2 
+# data <- env2
 # before<-proc.time()
 for (i in 1:runs){
 data.temp <- data
@@ -20,8 +20,8 @@ null.env.list[[i]] <- data.temp[,-ncol(data.temp)]
 # family <-"binomial"
 # AIC.restricted=F
 
-if (par == FALSE) {res.rand0<-sapply(null.env.list,function(x){mamglm(x,y=y,family,AIC.restricted=AIC.restricted)$importance})
-} else res.rand0<-sfSapply(null.env.list,function(x){mamglm(x,y=y,family,AIC.restricted=AIC.restricted)$importance})
+if (par == FALSE) {res.rand0 <- sapply(null.env.list, function(x){mamglm(x, y = y, scale = scale, family, AIC.restricted = AIC.restricted)$importance})
+} else res.rand0 <- sfSapply(null.env.list, function(x){mamglm(x, y = y, scale = scale, family, AIC.restricted = AIC.restricted)$importance})
 
 res.rand<-t(res.rand0) #tranpose (row <-> column)
 
