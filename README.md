@@ -12,6 +12,19 @@ The key functions in this package are the following.
 * `ses.maglm` Standardized effect size of relative importance values for * model averaging GLM.
 * `ses.mamglm` Standardized effect size of relative importance values for model averaging mutlivariate GLM.
 
+## Install
+From within R (>= 3.0.0), you can install:
+* the latest version of mglmn from CRAN with
+    ````r
+    install.packages(“mglmn”)
+    ````
+
+* the latest development version from github with
+    ````r
+    # install.packages("devtools")
+    devtools::install_github("mattocci27/mglmn")
+    ````
+
 ##### References
 Burnham, K.P. & Anderson, D.R. (2002) Model selection and multi-model inference: a practical information-theoretic approach. Springer Verlag, New York.
 
