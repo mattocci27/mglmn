@@ -9,18 +9,18 @@ mamglm <- function(data,y,family,scale=TRUE,AIC.restricted=FALSE){
   }
 
 #numbers of combination for each sample size
-  temp <- sapply(vars.list,ncol)
+  temp<-sapply(vars.list,ncol)
 
 #AIC for each model
   model.aic <-NULL
-  log.L <- NULL
-  vars <- list()
+  log.L<-NULL
+  vars<-list()
   k <- 0
-  vars2 <- matrix(numeric(n.vars*sum(temp)),nrow=sum(temp),ncol=n.vars)
+  vars2<-matrix(numeric(n.vars*sum(temp)),nrow=sum(temp),ncol=n.vars)
 
-# number of paremeter = i+1 (one means intercept)
-# sample size = nrow(data)
-# AICc = -2*logLike + 2*n.para*n.sample/(n.sample-n.para-1)
+#number of paremeter = i+1 (one means intercept)
+#sample size = nrow(data)
+#AICc = -2*logLike + 2*n.para*n.sample/(n.sample-n.para-1)
   for (i in 1:n.vars){
     for (j in 1:temp[i]){
       k <- k + 1
@@ -34,16 +34,18 @@ mamglm <- function(data,y,family,scale=TRUE,AIC.restricted=FALSE){
       log.L <- c(log.L, sum(log.L.temp))
 
       if (AIC.restricted){
-      #aic is corrected for finite sampe size
-      aic.restricted <- sum(-2*log.L.temp +2*nrow(data)*(i+1)/(nrow(data)-(i+1)-1))/ncol(data)
-      # aic.restricted <- sum(-2*log.L.temp +2*nrow(data)*(i+1)/(nrow(data)-(i+1)-1))
-      model.aic <- c(model.aic, aic.restricted)
-      } else {
-      # aic.unrestricted <- sum(-2*log.L.temp +2*(i+1))
-      aic.unrestricted <- sum(-2*log.L.temp +2*(i+1))/ncol(data)
-
-      model.aic <- c(model.aic, aic.unrestricted)
+        #aic is corrected for finite sampe size
+        aic.restricted <- sum(-2*log.L.temp +2*nrow(data)*(i+1)/(nrow(data)-(i+1)-1))/ncol(data)
+        # aic.restricted <- sum(-2*log.L.temp +2*nrow(data)*(i+1)/(nrow(data)-(i+1)-1))
+        model.aic <- c(model.aic, aic.restricted)
       } 
+      else{
+        # aic.unrestricted <- sum(-2*log.L.temp +2*(i+1))
+        aic.unrestricted <- sum(-2*log.L.temp +2*(i+1))/ncol(data)
+
+        model.aic <- c(model.aic, aic.unrestricted)
+      } 
+
     }
   }
 
@@ -60,7 +62,7 @@ mamglm <- function(data,y,family,scale=TRUE,AIC.restricted=FALSE){
   for (i in 1:nrow(vars2)){ # each row (sample)
     for (j in 1:n.vars){ # each column (paramter)
       for (k in 1:n.size[i]){ # upto number of paramters
-      if (colnames(vars2)[j]==vars[[i]][k]) vars2[i,j] <- 1
+        if (colnames(vars2)[j]==vars[[i]][k]) vars2[i,j] <- 1
       }
     }
   }
@@ -74,7 +76,7 @@ mamglm <- function(data,y,family,scale=TRUE,AIC.restricted=FALSE){
 #
 # if jth colnames of vars2, which is a parameter name, is identical to vars[[i]][k], which is a paramter name used in the analysis, vars2[i,j] is replaced by 1
 
-  res <- cbind(res, vars2)
+  res <-cbind(res, vars2)
   res <- res[order(res$AIC),]
 
   rownames(res) <- NULL
