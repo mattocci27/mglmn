@@ -1,4 +1,3 @@
-
 set.seed(5)
 x1 <- rnorm(100)
 x2 <- rnorm(100)
