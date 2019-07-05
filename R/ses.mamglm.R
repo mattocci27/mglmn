@@ -4,6 +4,8 @@
 #'
 #' The currently implemented null model shuffles the set of environmental variables across sites, while maintains species composition. Note that the function would take considerable time to execute.
 #'
+#' @name ses.mamglm
+#'
 #' @export
 #' @param data Data frame, typically of environmental variables. Rows for sites and colmuns for environmental variables.
 #' @param y Name of 'mvabund' object (character)
@@ -22,7 +24,7 @@
 #' @references Burnham, K.P. & Anderson, D.R. (2002) Model selection and multi-model inference: a practical information-theoretic approach. Springer Verlag, New York.
 #' @references Wang, Y., Naumann, U., Wright, S.T. & Warton, D.I. (2012) mvabund- an R package for model-based analysis of multivariate abundance data. Methods in Ecology and Evolution, 3, 471-474.
 #' @references Warton, D.I., Wright, S.T. & Wang, Y. (2012) Distance-based multivariate analyses confound location and dispersion effects. Methods in Ecology and Evolution, 3, 89-101.
-#' @references Nakamura A., Burwell C.J., Lambkin C.L., Katabuchi M., McDougall A., Raven R.J. and Neldner V.J. (2015), The role of human disturbance in island biogeography of arthropods and plants: an information theoretic approach, Journal of Biogeography, DOI: 10.1111/jbi.12520
+#' @references Nakamura, A., C. J. Burwell, C. L. Lambkin, M. Katabuchi, A. McDougall, R. J. Raven, and V. J. Neldner. (2015) The role of human disturbance in island biogeography of arthropods and plants: an information theoretic approach. Journal of Biogeography 42:1406-1417.
 #' @examples
 #' #load species composition and environmental data
 #' data(capcay)
@@ -31,7 +33,7 @@
 #' pre.abs0 <- capcay$abund
 #' pre.abs0[pre.abs0 > 0] = 1
 #' pre.abs <- mvabund(pre.abs0)
-#' 
+#'
 #' #to execute calculations on a single core:
 #' ses.mamglm(data = env_assem, y = "pre.abs",
 #'            par = FALSE, family = "binomial",
@@ -46,7 +48,7 @@
 #'            AIC.restricted = FALSE, runs = 4)
 #' }
 
-ses.mamglm <-function(data, y, family, scale = TRUE,
+ses.mamglm <- function(data, y, family, scale = TRUE,
                       AIC.restricted = TRUE, par = FALSE, runs = 999){
   if (scale) data <- as.data.frame(scale(data))
   res.obs <- mamglm(data,y = y,scale = scale, family,

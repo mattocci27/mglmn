@@ -25,7 +25,7 @@ ses.maglm(data, y, family, scale = TRUE, AIC.restricted = TRUE,
 \value{
 A data frame of resluts for each term
 
-\item{res.obs }{Observed importance of terms}
+\item{res.obs}{Observed importance of terms}
 
 \item{res.rand.mean}{Mean importance of terms in null communites}
 
@@ -33,7 +33,7 @@ A data frame of resluts for each term
 
 \item{SES}{Standardized effect size of importance of terms (= (res.obs - res.rand.mean) / res.rand.sd)}
 
-\item{res.obs.rank }{Rank of observed importance of terms vs. null communites}
+\item{res.obs.rank}{Rank of observed importance of terms vs. null communites}
 
 \item{runs}{Number of randomizations}
 }
@@ -68,7 +68,7 @@ Dobson, A. J. (1990) An Introduction to Generalized Linear Models. London: Chapm
 
 Burnham, K.P. & Anderson, D.R. (2002) Model selection and multi-model inference: a practical information-theoretic approach. Springer Verlag, New York.
 
-Nakamura A., Burwell C.J., Lambkin C.L., Katabuchi M., McDougall A., Raven R.J. and Neldner V.J. (2015), The role of human disturbance in island biogeography of arthropods and plants: an information theoretic approach, Journal of Biogeography, DOI: 10.1111/jbi.12520
+{Nakamura, A., C. J. Burwell, C. L. Lambkin, M. Katabuchi, A. McDougall, R. J. Raven, and V. J. Neldner. (2015) The role of human disturbance in island biogeography of arthropods and plants: an information theoretic approach. Journal of Biogeography 42:1406-1417.}
 }
 \seealso{
 \code{\link{maglm}}, \code{\link{mamglm}}, \code{\link{ses.mamglm}}

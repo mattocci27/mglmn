@@ -2,7 +2,7 @@ Package: mglmn
 Type: Package
 Title: Model Averaging for Multivariate GLM with Null Models
 Version: 0.1.0
-Date: 2019-07-04
+Date: 2019-07-05
 Author: Masatoshi Katabuchi and Akihiro Nakamura
 Maintainer: Masatoshi Katabuchi <mattocci27@gmail.com>
 Depends: R (>= 3.0), mvabund, snowfall, colorspace, lubridate
