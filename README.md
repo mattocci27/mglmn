@@ -25,7 +25,7 @@ From within R (>= 3.0.0), you can install:
     devtools::install_github("mattocci27/mglmn")
     ````
 
-##### References
+## References
 
 Burnham, K.P. & Anderson, D.R. (2002) Model selection and multi-model inference: a practical information-theoretic approach. Springer Verlag, New York.
 
