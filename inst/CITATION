@@ -5,8 +5,8 @@ citEntry(entry = "Misc",
     author = c(person("Masatoshi", "Katabuchi"),
                person("Akihiro", "Nakamura")),
     note = "R package version 0.1.0",
-    year = "2019",
-    textVersion = "Katabuchi, M. and Nakamura, A. (2019), 
+    year = "2020",
+    textVersion = "Katabuchi, M. and Nakamura, A. (2020), 
     Model Averaging for Multivariate GLM with Null Models. 
     R package version 0.1.0."
 )

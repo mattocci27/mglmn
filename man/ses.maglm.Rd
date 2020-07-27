@@ -4,8 +4,15 @@
 \alias{ses.maglm}
 \title{Standardized effect size of relative importance values for mamglm}
 \usage{
-ses.maglm(data, y, family, scale = TRUE, AIC.restricted = TRUE,
-  par = FALSE, runs = 999)
+ses.maglm(
+  data,
+  y,
+  family,
+  scale = TRUE,
+  AIC.restricted = TRUE,
+  par = FALSE,
+  runs = 999
+)
 }
 \arguments{
 \item{data}{Data frame, typically of environmental variables. Rows for sites and colmuns for environmental variables.}
@@ -44,6 +51,7 @@ Standardized effect size of relative importance values for model averaging mutli
 The currently implemented null model shuffles the set of environmental variables across sites, while maintains species composition. Note that the function would take considerable time to execute.
 }
 \examples{
+library(mvabund)
 #load species composition and environmental data
 data(capcay)
 adj.sr <- capcay$adj.sr

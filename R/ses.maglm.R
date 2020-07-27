@@ -26,6 +26,7 @@
 #' @references{Nakamura, A., C. J. Burwell, C. L. Lambkin, M. Katabuchi, A. McDougall, R. J. Raven, and V. J. Neldner. (2015) The role of human disturbance in island biogeography of arthropods and plants: an information theoretic approach. Journal of Biogeography 42:1406-1417.}
 #' @seealso\code{\link{maglm}}, \code{\link{mamglm}}, \code{\link{ses.mamglm}}
 #' @examples
+#' library(mvabund)
 #' #load species composition and environmental data
 #' data(capcay)
 #' adj.sr <- capcay$adj.sr

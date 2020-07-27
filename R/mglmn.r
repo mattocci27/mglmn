@@ -27,6 +27,7 @@
 #' @import snowfall
 #' @import colorspace
 #' @import lubridate
+#' @import DBI
 #' @importFrom stats glm logLik rnorm sd
 #' @importFrom utils combn
 NULL

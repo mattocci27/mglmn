@@ -26,6 +26,7 @@
 #' @references Warton, D.I., Wright, S.T. & Wang, Y. (2012) Distance-based multivariate analyses confound location and dispersion effects. Methods in Ecology and Evolution, 3, 89-101.
 #' @references Nakamura, A., C. J. Burwell, C. L. Lambkin, M. Katabuchi, A. McDougall, R. J. Raven, and V. J. Neldner. (2015) The role of human disturbance in island biogeography of arthropods and plants: an information theoretic approach. Journal of Biogeography 42:1406-1417.
 #' @examples
+#' library(mvabund)
 #' #load species composition and environmental data
 #' data(capcay)
 #' #use a subset of data in this example to reduce run time

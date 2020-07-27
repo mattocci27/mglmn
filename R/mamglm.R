@@ -21,6 +21,7 @@
 #' @seealso\code{\link{maglm}}, \code{\link{ses.maglm}}, \code{\link{ses.mamglm}}
 #' @examples
 #' #load species composition and environmental data
+#' library(mvabund)
 #' data(capcay)
 #' #use a subset of data in this example to reduce run time
 #' env_assem <- capcay$env_assem[, 1:5]

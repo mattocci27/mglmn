@@ -1,5 +1,5 @@
-^\.DS_Store$
-^\.history$
+.DS_Store$
+.history$
 .git
 .gitignore
 ^note\.R$
@@ -8,3 +8,5 @@ cran_comments.md
 figs
 build.rmd
 test.r
+LICENSE.md
+docker/
