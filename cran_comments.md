@@ -1,12 +1,12 @@
 ## Update
 
-This is an update for fixing bugs that affects for relative AICc among models
+This is an update for fixing bugs that affects for relative AICc among models.
 
 ## Test environments
 
-* local OS X install, R 3.6.0
-* manjaro 18.0.4 R 3.6.0
-* windows server 2012 R2, R 3.6.0
+* ubuntu 20.4, R 4.0.2, GCC (local)
+* macOS 10.15.4, R 4.0.2, clang (local)
+* Windows Server 2008 R2 SP1, R-release, 32/64 bit (Rhub)
 
 ## R CMD check results
 
