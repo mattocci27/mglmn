@@ -1,4 +1,5 @@
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/mglmn)](http://cran.r-project.org/package=mglmn)
+![R-CMD-check](https://github.com/mattocci27/mglmn/workflows/R-CMD-check/badge.svg?branch=master)
  [![Downloads](http://cranlogs.r-pkg.org/badges/mglmn?color=brightgreen)](http://cran.rstudio.com/package=mglmn)
 # mglmn
 Tools for univariate and multivariate generalized linear models with model averaging and null model technique (Nakamura et al. 2015).
