@@ -1,0 +1,29 @@
+citHeader("To cite mglmn in publications, please use:")
+
+citEntry(entry = "Misc",
+    title = "Model Averaging for Multivariate GLM with Null Models",
+    author = c(person("Masatoshi", "Katabuchi"),
+               person("Akihiro", "Nakamura")),
+    note = "R package version 0.1.0",
+    year = "2020",
+    textVersion = "Katabuchi, M. and Nakamura, A. (2020), 
+    Model Averaging for Multivariate GLM with Null Models. 
+    R package version 0.1.0."
+)
+
+citEntry(entry = "article",
+    title = "The role of human disturbance in island biogeography of arthropods and plants: an information theoretic approach",
+    volume = "42",
+    number = "8",
+    journal = "Journal of Biogeography",
+    doi = "10.1111/jbi.12520",
+    author = "Akihiro Nakamura and Chris J. Burwell and Christine L. Lambkin and Masatoshi Katabuchi and Andrew McDougall and 
+    Robert J. Raven and V. John Neldner",
+    month = "aug",
+    year = "2015",
+    pages = "1406-1417",
+    textVersion = "Nakamura, A., C. J. Burwell, C. L. Lambkin, M. Katabuchi, A. McDougall, R. J. Raven, and V. J. Neldner. (2015) 
+    The role of human disturbance in island biogeography of arthropods and plants: an information theoretic approach. 
+    Journal of Biogeography 42:1406-1417."
+    )
+
