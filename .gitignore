@@ -5,3 +5,4 @@ test.r
 vignettes/*.R
 .DS_Store
 build.rmd
+*.tar.gz
