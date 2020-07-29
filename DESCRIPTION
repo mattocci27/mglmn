@@ -12,9 +12,6 @@ BugReports: https://github.com/mattocci27/mglmn/issues
 Depends: 
     R (>= 3.0)
 Imports:
-    DBI,
-    colorspace, 
-    lubridate,
     mvabund, 
     snowfall
 Repository: CRAN
