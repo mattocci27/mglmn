@@ -1,8 +1,8 @@
-#' Model averaging for multivariate generalized mixed linear models
+#' Model averaging for multivariate generalized linear latent variable models
 #'
-#' Model averaging for multivariate GLMM based on information theory.
+#' Model averaging for multivariate GLLVM based on information theory.
 #'
-#' @name mamglmm
+#' @name mamgllvm
 #'
 #' @export
 #' @param data Data frame, typically of environmental variables. Rows for sites and colmuns for environmental variables.
@@ -34,15 +34,15 @@
 #' freq.abs <- mvabund(log(capcay$abund + 1))
 #'
 #' #to fit a gaussian regression model to frequency data:
-#' mamglmm(data = env_assem, y = "freq.abs", family = "gaussian")
+#' mamgllvm(data = env_assem, y = "freq.abs", family = "gaussian")
 #'
 #' #to fit a binomial regression model to presence/absence data"
 #' pre.abs0 <- capcay$abund
 #' pre.abs0[pre.abs0 > 0] = 1
 #' pre.abs <- mvabund(pre.abs0)
 #'
-#' mamglmm(data = env_assem, y = "pre.abs", family = "binomial")
-mamglmm <- function(data, y, family, scale = TRUE, AIC.restricted = FALSE){
+#' mamgllvm(data = env_assem, y = "pre.abs", family = "binomial")
+mamgllvm <- function(data, y, family, scale = TRUE, AIC.restricted = FALSE){
   if (scale) data <- as.data.frame(scale(data))
     my.vars <- colnames(data)
     n.vars <- length(my.vars)
