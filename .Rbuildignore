@@ -10,4 +10,5 @@ build.rmd
 test.r
 LICENSE.md
 docker/
+check/
 .tar.gz$

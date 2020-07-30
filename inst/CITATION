@@ -1,13 +1,13 @@
 citHeader("To cite mglmn in publications, please use:")
 
 citEntry(entry = "Misc",
-    title = "Model Averaging for Multivariate GLM with Null Models",
+    title = "Model Averaging for Multivariate GLMM with Null Models",
     author = c(person("Masatoshi", "Katabuchi"),
                person("Akihiro", "Nakamura")),
     note = "R package version 0.1.0",
     year = "2020",
     textVersion = "Katabuchi, M. and Nakamura, A. (2020), 
-    Model Averaging for Multivariate GLM with Null Models. 
+    Model Averaging for Multivariate GLMM with Null Models. 
     R package version 0.1.0."
 )
 

@@ -1,6 +1,6 @@
 ## Update
 
-This is an update for fixing bugs that affects for relative AICc among models.
+This is an update for fixing bugs that affects for relative AICc among models, which doesn't affect the order of model ranks based on information theory.
 
 ## Test environments
 
