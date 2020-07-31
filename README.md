@@ -8,14 +8,15 @@ The package provides functions to estimate the relative importance of predictor 
 
 The key functions in this package are the following.
 
-* `maglm` Model averaging for GLM based on information theory.
 * `mamglm` Model averaging for multivariate GLM based on information theory.
-* `ses.maglm` Standardized effect size of relative importance values for * model averaging GLM.
+* `mamgllvm` Model averaging for multivariate GLLVM based on information theory.
 * `ses.mamglm` Standardized effect size of relative importance values for model averaging mutlivariate GLM.
+* `ses.mamgllvm` Standardized effect size of relative importance values for model averaging mutlivariate GLLM.
 
 ## Install
 From within R (>= 3.0.0), you can install:
 * the latest version of mglmn from CRAN with
+
     ````r
     install.packages(“mglmn”)
     ````

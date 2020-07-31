@@ -3,9 +3,9 @@
 #' Returns variables for the best model based on AIC
 #'
 #' @export
-#' @param x A list of results of `maglm` and `mamglmg`
+#' @param x A list of results of `mamglm` and `mamgllvm`
 #' @return A vector of terms of the best model.
-#' @seealso \code{\link{maglm}}, \code{\link{mamglm}}
+#' @seealso \code{\link{mamglm}}, \code{\link{mamgllvm}}
 #' @examples
 #' #load species composition and environmental data
 #' data(capcay)
@@ -13,7 +13,7 @@
 #' env_sp <- capcay$env_sp
 #' 
 #' #to fit a poisson regression model:
-#' res <- maglm(data = env_sp, y = "adj.sr", family = "gaussian")
+#' res <- mamglm(data = env_sp, y = "adj.sr", family = "gaussian")
 #' 
 #' best.vars(res)
 

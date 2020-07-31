@@ -24,7 +24,7 @@
 #'
 #' Warton, D. I., Guillaume Blanchet, F., O'Hara, R. B., Ovaskainen, O., Taskinen, S., Walker, S. C. and Hui, F. K. C. (2015). So many variables: Joint modeling in community ecology. Trends in Ecology & Evolution, 30:766-779.
 #'
-#' @seealso\code{\link{maglm}}, \code{\link{ses.maglm}}, \code{\link{ses.mamglm}}
+#' @seealso\code{\link{maglm}}, \code{\link{ses.mamglm}}, \code{\link{ses.mamgllvm}}
 #' @examples
 #' #load species composition and environmental data
 #' library(mvabund)

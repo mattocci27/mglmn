@@ -57,5 +57,5 @@ Warton, D.I., Wright, S.T. & Wang, Y. (2012) Distance-based multivariate analyse
 Nakamura, A., C. J. Burwell, C. L. Lambkin, M. Katabuchi, A. McDougall, R. J. Raven, and V. J. Neldner. (2015) The role of human disturbance in island biogeography of arthropods and plants: an information theoretic approach. Journal of Biogeography 42:1406-1417.
 }
 \seealso{
-\code{\link{maglm}}, \code{\link{ses.maglm}}, \code{\link{ses.mamglm}}
+\code{\link{maglm}}, \code{\link{ses.mamglm}}, \code{\link{ses.mamgllvm}}
 }

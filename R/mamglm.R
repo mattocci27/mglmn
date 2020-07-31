@@ -18,7 +18,7 @@
 #' @references Wang, Y., Naumann, U., Wright, S.T. & Warton, D.I. (2012) mvabund- an R package for model-based analysis of multivariate abundance data. Methods in Ecology and Evolution, 3, 471-474.
 #' @references Warton, D.I., Wright, S.T. & Wang, Y. (2012) Distance-based multivariate analyses confound location and dispersion effects. Methods in Ecology and Evolution, 3, 89-101.
 #' @references Nakamura, A., C. J. Burwell, C. L. Lambkin, M. Katabuchi, A. McDougall, R. J. Raven, and V. J. Neldner. (2015) The role of human disturbance in island biogeography of arthropods and plants: an information theoretic approach. Journal of Biogeography 42:1406-1417.
-#' @seealso\code{\link{maglm}}, \code{\link{ses.maglm}}, \code{\link{ses.mamglm}}
+#' @seealso\code{\link{maglm}}, \code{\link{ses.mamglm}}, \code{\link{ses.mamgllvm}}
 #' @examples
 #' #load species composition and environmental data
 #' library(mvabund)

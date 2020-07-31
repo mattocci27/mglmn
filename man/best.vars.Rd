@@ -7,7 +7,7 @@
 best.vars(x)
 }
 \arguments{
-\item{x}{A list of results of `maglm` and `mamglmg`}
+\item{x}{A list of results of `mamglm` and `mamgllvm`}
 }
 \value{
 A vector of terms of the best model.
@@ -22,10 +22,10 @@ adj.sr <- capcay$adj.sr
 env_sp <- capcay$env_sp
 
 #to fit a poisson regression model:
-res <- maglm(data = env_sp, y = "adj.sr", family = "gaussian")
+res <- mamglm(data = env_sp, y = "adj.sr", family = "gaussian")
 
 best.vars(res)
 }
 \seealso{
-\code{\link{maglm}}, \code{\link{mamglm}}
+\code{\link{mamglm}}, \code{\link{mamgllvm}}
 }
