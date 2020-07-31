@@ -12,8 +12,8 @@
 #' adj.sr <- capcay$adj.sr
 #' env_sp <- capcay$env_sp
 #' 
-#' #to fit a poisson regression model:
-#' res <- mamglm(data = env_sp, y = "adj.sr", family = "gaussian")
+#' #to fit a gaussian regression model:
+#' res <- maglm(data = env_sp, y = adj.sr, family = "gaussian")
 #' 
 #' best.vars(res)
 

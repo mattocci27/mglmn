@@ -9,7 +9,7 @@ mamglm(data, y, family, scale = TRUE, AIC.restricted = FALSE)
 \arguments{
 \item{data}{Data frame, typically of environmental variables. Rows for sites and colmuns for environmental variables.}
 
-\item{y}{Name of 'mvabund' object (character)}
+\item{y}{site x spcies matrix (col for species, row for sites)}
 
 \item{family}{the 'family' object used.}
 
@@ -35,17 +35,17 @@ library(mvabund)
 data(capcay)
 #use a subset of data in this example to reduce run time
 env_assem <- capcay$env_assem[, 1:5]
-freq.abs <- mvabund(log(capcay$abund + 1))
+freq.abs <- log(capcay$abund + 1)
 
 #to fit a gaussian regression model to frequency data:
-mamglm(data = env_assem, y = "freq.abs", family = "gaussian")
+mamglm(data = env_assem, y = freq.abs, family = "gaussian")
 
 #to fit a binomial regression model to presence/absence data"
 pre.abs0 <- capcay$abund
 pre.abs0[pre.abs0 > 0] = 1
 pre.abs <- mvabund(pre.abs0)
 
-mamglm(data = env_assem, y = "pre.abs", family = "binomial")
+mamglm(data = env_assem, y = pre.abs, family = "binomial")
 }
 \references{
 Burnham, K.P. & Anderson, D.R. (2002) Model selection and multi-model inference: a practical information-theoretic approach. Springer Verlag, New York.

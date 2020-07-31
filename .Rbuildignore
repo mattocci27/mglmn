@@ -9,6 +9,7 @@ figs
 build.rmd
 test.r
 LICENSE.md
+NEWS.md
 docker/
 check/
 .tar.gz$
