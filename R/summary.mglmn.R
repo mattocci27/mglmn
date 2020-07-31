@@ -2,17 +2,18 @@
 #'
 #' The \code{summary.mamglm} provides a summary of the 
 #'
-#' @name summary.mamglm
+#' @name summary.mglmn
 #'
 #' @export
 #' @method summary mglmn
-#' @param object mamglm or mamgllvm object
-#' @param top_n Number of models to show
+#' @param object mglmn object.
+#' @param top_n Number of models to show.
 #' @param digits Number of digits to use for rounding.
+#' @param ... additional arguments affecting the summary produced.
 #' @return A list of results
 #' @return \item{res.table }{data frame with "AIC", AIC of the model, "log.L", log-likelihood of the model, "delta.aic", AIC difference to the best model, "wAIC", weighted AIC to the model, "n.vars", number of variables in the model, and each term.}
 
-summary.mglmn <- function(object, top_n = 3, digits = 3) {
+summary.mglmn <- function(object, top_n = 3, digits = 3, ...) {
 
   tb0 <- head(round(object$res.table, digits), top_n)
 
