@@ -26,7 +26,7 @@
 #' @keywords internal
 "_PACKAGE"
 
-#' @importFrom mvabund manylm manyglm mvabund
+#' @importFrom mvabund manylm manyglm
 #' @importFrom gllvm gllvm
 #' @import snowfall
 #' @importFrom stats glm logLik rnorm sd

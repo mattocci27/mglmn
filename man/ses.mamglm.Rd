@@ -58,10 +58,10 @@ data(capcay)
 env_assem <- capcay$env_assem[, 1:5]
 pre.abs0 <- capcay$abund
 pre.abs0[pre.abs0 > 0] = 1
-pre.abs <- pre.abs0
+pre.abs <- as.matrix(pre.abs0)
 
 #to execute calculations on a single core:
-ses.mamglm(data = env_assem, y = pre.abs,
+ses.mamglm(data = env_assem, y = "pre.abs",
            par = FALSE, family = "binomial",
            AIC.restricted=FALSE,runs=4)
 
@@ -69,7 +69,7 @@ ses.mamglm(data = env_assem, y = pre.abs,
 #to execute parallel calculations:
 sfInit(parallel = TRUE, cpus = 4)
 sfExportAll()
-ses.mamglm(data = env_assem, y = pre.abs,
+ses.mamglm(data = env_assem, y = "pre.abs",
            par = TRUE, family = "binomial",
            AIC.restricted = FALSE, runs = 4)
 }

@@ -13,6 +13,6 @@ ses.maglm(x, ...)
 \item{x, }{removed parameters}
 }
 \description{
-`maglm()` and `ses.maglm()` are removed as of mglmn 0.2.0. Please use `MuMIn::model.ave()` for univariate analyses instead.
+`maglm()` and `ses.maglm()` were removed as of mglmn 0.2.0. Please use `MuMIn::model.ave()` for univariate analyses instead.
 }
 \keyword{internal}

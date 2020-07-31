@@ -18,11 +18,12 @@ Returns variables for the best model based on AIC
 \examples{
 #load species composition and environmental data
 data(capcay)
-adj.sr <- capcay$adj.sr
-env_sp <- capcay$env_sp
+#use a subset of data in this example to reduce run time
+env_assem <- capcay$env_assem[, 1:5]
+freq.abs <- as.matrix(log(capcay$abund + 1))
 
-#to fit a gaussian regression model:
-res <- mamglm(data = env_sp, y = adj.sr, family = "gaussian")
+#to fit a gaussian regression model to frequency data:
+res <- mamglm(data = env_assem, y = "freq.abs", family = "gaussian")
 
 best.vars(res)
 }

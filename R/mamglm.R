@@ -25,20 +25,19 @@
 #' data(capcay)
 #' #use a subset of data in this example to reduce run time
 #' env_assem <- capcay$env_assem[, 1:5]
-#' freq.abs <- log(capcay$abund + 1)
+#' freq.abs <- as.matrix(log(capcay$abund + 1))
 #'
 #' #to fit a gaussian regression model to frequency data:
-#' mamglm(data = env_assem, y = freq.abs, family = "gaussian")
+#' mamglm(data = env_assem, y = "freq.abs", family = "gaussian")
 #'
 #' #to fit a binomial regression model to presence/absence data"
 #' pre.abs0 <- capcay$abund
 #' pre.abs0[pre.abs0 > 0] = 1
-#' pre.abs <- mvabund(pre.abs0)
+#' pre.abs <- as.matrix(pre.abs0)
 #'
-#' mamglm(data = env_assem, y = pre.abs, family = "binomial")
+#' mamglm(data = env_assem, y = "pre.abs", family = "binomial")
 
 mamglm <- function(data, y, family, scale = TRUE, AIC.restricted = FALSE){
-  y.str <- quote(y)
   if (scale) data <- as.data.frame(scale(data))
     my.vars <- colnames(data)
     n.vars <- length(my.vars)
@@ -65,10 +64,7 @@ mamglm <- function(data, y, family, scale = TRUE, AIC.restricted = FALSE){
       k <- k + 1
       vars.temp <- vars.list[[i]][, j]
       vars[[k]] <- vars.temp
-      f.str <- make.formula(y.str, vars.temp)
-      print(f.str)
-      print(class(y))
-      y <- mvabund(y)
+      f.str <- make.formula(y, vars.temp)
       if (family == "gaussian") fit.temp <- manylm(f.str, data = data)
       else fit.temp <- manyglm(f.str, data = data, family = family)
 
