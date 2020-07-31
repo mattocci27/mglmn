@@ -6,7 +6,7 @@
 #'
 #' @export
 #' @param data Data frame, typically of environmental variables. Rows for sites and colmuns for environmental variables.
-#' @param y Name of 'mvabund' object (character)
+#' @param y Name of 'site x spcies matrix' (col for species, row for sites) (character)
 #' @param family the 'family' object used.
 #' @param scale Whether to scale independent variables (default = TRUE)
 #' @param AIC.restricted Whether to use AICc (TRUE) or AIC (FALSE) (default = TRUE).
@@ -155,5 +155,6 @@ mamgllvm <- function(data, y, family, scale = TRUE, AIC.restricted = FALSE){
   res.temp <- res[, -1:-5]
   res2 <- apply(apply(res.temp, 2,
                       function(x)res$wAIC * x), 2, sum)
-  list(res.table = res, importance = res2, family = family)
+  out <- list(res.table = res, importance = res2, family = family)
+  structure(out, class = "mglmn")
 }

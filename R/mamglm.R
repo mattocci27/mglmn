@@ -6,7 +6,7 @@
 #'
 #' @export
 #' @param data Data frame, typically of environmental variables. Rows for sites and colmuns for environmental variables.
-#' @param y site x spcies matrix (col for species, row for sites)
+#' @param y Name of 'site x spcies matrix' (col for species, row for sites) (character)
 #' @param family the 'family' object used.
 #' @param scale Whether to scale independent variables (default = TRUE)
 #' @param AIC.restricted Whether to use AICc (TRUE) or AIC (FALSE) (default = TRUE).
@@ -39,10 +39,10 @@
 
 mamglm <- function(data, y, family, scale = TRUE, AIC.restricted = FALSE){
   if (scale) data <- as.data.frame(scale(data))
-    my.vars <- colnames(data)
-    n.vars <- length(my.vars)
-    vars.list <- list()
-    for (i in 1:n.vars){
+  my.vars <- colnames(data)
+  n.vars <- length(my.vars)
+  vars.list <- list()
+  for (i in 1:n.vars){
     vars.list[[i]] <- combn(my.vars, i)
   }
 
@@ -122,5 +122,6 @@ mamglm <- function(data, y, family, scale = TRUE, AIC.restricted = FALSE){
   res.temp <- res[, -1:-5]
   res2 <- apply(apply(res.temp, 2,
                       function(x)res$wAIC * x), 2, sum)
-  list(res.table = res, importance = res2, family = family)
+  out <- list(res.table = res, importance = res2, family = family)
+  structure(out, class = "mglmn")
 }

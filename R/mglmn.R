@@ -26,6 +26,7 @@
 #' @keywords internal
 "_PACKAGE"
 
+#' @importFrom utils head
 #' @importFrom mvabund manylm manyglm
 #' @importFrom gllvm gllvm
 #' @import snowfall

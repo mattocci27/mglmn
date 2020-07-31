@@ -8,7 +8,7 @@
 #'
 #' @export
 #' @param data Data frame, typically of environmental variables. Rows for sites and colmuns for environmental variables.
-#' @param y Name of 'mvabund' object (character)
+#' @param y Name of 'site x spcies matrix' (col for species, row for sites) (character)
 #' @param scale Whether to scale independent variables (default = TRUE)
 #' @param family the 'family' object used.
 #' @param AIC.restricted Wheter to use AICc (TRUE) or AIC (FALSE) (default = TRUE).
