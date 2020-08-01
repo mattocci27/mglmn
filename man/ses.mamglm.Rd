@@ -4,15 +4,7 @@
 \alias{ses.mamglm}
 \title{Standardized effect size of relative importance values for mamglm}
 \usage{
-ses.mamglm(
-  data,
-  y,
-  family,
-  scale = TRUE,
-  AIC.restricted = TRUE,
-  par = FALSE,
-  runs = 999
-)
+ses.mamglm(data, y, family, scale = TRUE, rank = NULL, par = FALSE, runs = 999)
 }
 \arguments{
 \item{data}{Data frame, typically of environmental variables. Rows for sites and colmuns for environmental variables.}
@@ -23,7 +15,7 @@ ses.mamglm(
 
 \item{scale}{Whether to scale independent variables (default = TRUE)}
 
-\item{AIC.restricted}{Wheter to use AICc (TRUE) or AIC (FALSE) (default = TRUE).}
+\item{rank}{rank}
 
 \item{par}{Wheter to use parallel computing (default = FALSE)}
 
@@ -62,16 +54,14 @@ pre.abs <- as.matrix(pre.abs0)
 
 #to execute calculations on a single core:
 ses.mamglm(data = env_assem, y = "pre.abs",
-           par = FALSE, family = "binomial",
-           AIC.restricted=FALSE,runs=4)
+           par = FALSE, family = "binomial", runs=4)
 
 \dontrun{
 #to execute parallel calculations:
 sfInit(parallel = TRUE, cpus = 4)
 sfExportAll()
 ses.mamglm(data = env_assem, y = "pre.abs",
-           par = TRUE, family = "binomial",
-           AIC.restricted = FALSE, runs = 4)
+           par = TRUE, family = "binomial", runs=4)
 }
 }
 \references{

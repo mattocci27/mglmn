@@ -9,7 +9,7 @@
 #' @param y Name of 'site x spcies matrix' (col for species, row for sites) (character)
 #' @param family the 'family' object used.
 #' @param scale Whether to scale independent variables (default = TRUE)
-#' @param AIC.restricted Whether to use AICc (TRUE) or AIC (FALSE) (default = TRUE).
+#' @param rank optional
 #' @return A list of results
 #' @return \item{res.table }{data frame with "AIC", AIC of the model, "log.L", log-likelihood of the model, "delta.aic", AIC difference to the best model, "wAIC", weighted AIC to the model, "n.vars", number of variables in the model, and each term.}
 #' @return \item{importance }{vector of relative importance value of each term, caluclated as as um of the weighted AIC over all of the model in whith the term aperars.}
@@ -37,7 +37,15 @@
 #'
 #' mamglm(data = env_assem, y = "pre.abs", family = "binomial")
 
-mamglm <- function(data, y, family, scale = TRUE, AIC.restricted = FALSE){
+mamglm <- function(data, y, family, scale = TRUE, rank = NULL){
+  
+  if (is.null(rank)) rank <- "AICc"
+  
+  if (!is.null(rank) && rank != "AIC" && rank != "AICc" && rank != "BIC" && 
+      rank != "aic" && rank != "aicc" && rank != "bic") {
+    stop("Please use 'AIC', 'AICc' or 'BIC' for rank estimates")
+  }
+
   if (scale) data <- as.data.frame(scale(data))
   my.vars <- colnames(data)
   n.vars <- length(my.vars)
@@ -56,8 +64,9 @@ mamglm <- function(data, y, family, scale = TRUE, AIC.restricted = FALSE){
   k <- 0
   vars2 <- matrix(numeric(n.vars * sum(temp)), nrow = sum(temp), ncol = n.vars)
 
-#number of paremeter = i+1 (one means intercept)
-#sample size = nrow(data)
+# number of paremeter = i+1 (one means intercept)
+# sample size = nrow(data)
+# number of species = ncol(data)
 #AICc = -2*logLike + 2*n.para*n.sample/(n.sample-n.para-1)
   for (i in 1:n.vars){
     for (j in 1:temp[i]){
@@ -71,18 +80,19 @@ mamglm <- function(data, y, family, scale = TRUE, AIC.restricted = FALSE){
       log.L.temp <- logLik(fit.temp)
       log.L <- c(log.L, sum(log.L.temp))
 
-      if (AIC.restricted){
-        #aic is corrected for finite sampe size
-        aic.restricted <- sum(-2 * log.L.temp + 2 * nrow(data) * (i + 1) /
-                              (nrow(data) - (i + 1) - 1)) / ncol(data)
-        # aic.restricted <- sum(-2*log.L.temp +2*nrow(data)*(i+1)/(nrow(data)-(i+1)-1))
-        model.aic <- c(model.aic, aic.restricted)
+      if (is.null(rank) || rank == "AICc" || rank == "aicc") {
+        #ranks <- sum(-2 * log.L.temp + 2 * nrow(data) * (i + 1) /
+        #                      (nrow(data) - (i + 1) - 1)) / ncol(data)
+        ranks <- sum(-2 * log.L.temp + 2 * nrow(data) * (i + 1) /
+                              (nrow(data) - (i + 1) - 1))
+      } else if (rank == "AIC" || rank == "aic") {
+       # ranks <- sum(-2 * log.L.temp + 2 * (i + 1)) / ncol(data)
+        ranks <- sum(-2 * log.L.temp + 2 * (i + 1)) 
+      } else if (rank == "BIC" || rank == "bic") {
+       # ranks <- sum(-2 * log.L.temp + (i + 1) * log(nrow(data))) / ncol(data)
+        ranks <- sum(-2 * log.L.temp + (i + 1) * log(nrow(data)))
       }
-      else{
-        # aic.unrestricted <- sum(-2*log.L.temp +2*(i+1))
-        aic.unrestricted <- sum(-2 * log.L.temp + 2 * (i + 1)) / ncol(data)
-        model.aic <- c(model.aic, aic.unrestricted)
-      }
+        model.aic <- c(model.aic, ranks)
     }
   }
 
@@ -123,5 +133,5 @@ mamglm <- function(data, y, family, scale = TRUE, AIC.restricted = FALSE){
   res2 <- apply(apply(res.temp, 2,
                       function(x)res$wAIC * x), 2, sum)
   out <- list(res.table = res, importance = res2, family = family)
-  structure(out, class = "mglmn")
+  structure(out, class = "mglmn", rank = rank)
 }

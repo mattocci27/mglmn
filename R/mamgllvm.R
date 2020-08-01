@@ -9,7 +9,7 @@
 #' @param y Name of 'site x spcies matrix' (col for species, row for sites) (character)
 #' @param family the 'family' object used.
 #' @param scale Whether to scale independent variables (default = TRUE)
-#' @param AIC.restricted Whether to use AICc (TRUE) or AIC (FALSE) (default = TRUE).
+#' @param rank optional
 #' @return A list of results
 #' @return \item{res.table }{data frame with "AIC", AIC of the model, "log.L", log-likelihood of the model, "delta.aic", AIC difference to the best model, "wAIC", weighted AIC to the model, "n.vars", number of variables in the model, and each term.}
 #' @return \item{importance }{vector of relative importance value of each term, caluclated as as um of the weighted AIC over all of the model in whith the term aperars.}
@@ -42,7 +42,13 @@
 #' pre.abs <- mvabund(pre.abs0)
 #'
 #' mamgllvm(data = env_assem, y = "pre.abs", family = "binomial")
-mamgllvm <- function(data, y, family, scale = TRUE, AIC.restricted = FALSE){
+mamgllvm <- function(data, y, family, scale = TRUE, rank = NULL){
+
+  if (!is.null(rank) && rank != "AIC" && rank != "AICc" && rank != "BIC" && 
+      rank != "aic" && rank != "aicc" && rank != "bic") {
+    stop("Please use 'AIC', 'AICc' or 'BIC' for rank estimates")
+  }
+
   if (scale) data <- as.data.frame(scale(data))
     my.vars <- colnames(data)
     n.vars <- length(my.vars)
@@ -107,14 +113,14 @@ mamgllvm <- function(data, y, family, scale = TRUE, AIC.restricted = FALSE){
       log.L.temp <- fit.summary$`log-likelihood`
       log.L <- c(log.L, log.L.temp)
 
-      if (AIC.restricted){
-        aic.restricted <- fit.summary$AICc
-        model.aic <- c(model.aic, aic.restricted)
+      if (is.null(rank) || rank == "AICc" || rank == "aicc") {
+        ranks <- fit.summary$AICc
+      } else if (rank == "AIC" || rank == "aic") {
+        ranks <- fit.summary$AIC
+      } else if (rank == "BIC" || rank == "bic") {
+        ranks <- fit.summary$BIC
       }
-      else{
-        aic.unrestricted <- fit.summary$AIC
-        model.aic <- c(model.aic, aic.unrestricted)
-      }
+        model.aic <- c(model.aic, ranks)
     }
   }
 

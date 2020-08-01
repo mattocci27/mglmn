@@ -24,7 +24,7 @@ From within R (>= 3.0.0), you can install:
 * the latest development version from github with
     ````r
     # install.packages("devtools")
-    devtools::install_github("mattocci27/mglmn")
+    devtools::install_github("mattocci27/mglmn@deprecate-fun")
     ````
 
 ## References

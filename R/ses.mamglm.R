@@ -11,7 +11,7 @@
 #' @param y Name of 'site x spcies matrix' (col for species, row for sites) (character)
 #' @param scale Whether to scale independent variables (default = TRUE)
 #' @param family the 'family' object used.
-#' @param AIC.restricted Wheter to use AICc (TRUE) or AIC (FALSE) (default = TRUE).
+#' @param rank rank
 #' @param par Wheter to use parallel computing (default = FALSE)
 #' @param runs Number of randomizations.
 #' @return A data frame of resluts for each term
@@ -37,23 +37,21 @@
 #'
 #' #to execute calculations on a single core:
 #' ses.mamglm(data = env_assem, y = "pre.abs",
-#'            par = FALSE, family = "binomial",
-#'            AIC.restricted=FALSE,runs=4)
+#'            par = FALSE, family = "binomial", runs=4)
 #'
 #' \dontrun{
 #' #to execute parallel calculations:
 #' sfInit(parallel = TRUE, cpus = 4)
 #' sfExportAll()
 #' ses.mamglm(data = env_assem, y = "pre.abs",
-#'            par = TRUE, family = "binomial",
-#'            AIC.restricted = FALSE, runs = 4)
+#'            par = TRUE, family = "binomial", runs=4)
 #' }
 
 ses.mamglm <- function(data, y, family, scale = TRUE,
-                      AIC.restricted = TRUE, par = FALSE, runs = 999){
+                      rank = NULL, par = FALSE, runs = 999){
   if (scale) data <- as.data.frame(scale(data))
   res.obs <- mamglm(data,y = y,scale = scale, family,
-                    AIC.restricted = AIC.restricted)$importance
+                    rank = rank)$importance
   # runs<-2#
   null.env.list <- list()
   # data <- env2
@@ -73,7 +71,7 @@ ses.mamglm <- function(data, y, family, scale = TRUE,
                         function(x){mamglm(x, y = y, 
                                            scale = scale, 
                                            family,
-                                           AIC.restricted = AIC.restricted)$importance
+                                           rank = rank)$importance
                   })
   } else {
     res.rand0 <- sfSapply(null.env.list,
@@ -81,7 +79,7 @@ ses.mamglm <- function(data, y, family, scale = TRUE,
                                              y = y,
                                              scale = scale,
                                              family,
-                                             AIC.restricted = AIC.restricted)$importance
+                                             rank = rank)$importance
                                              })
   }
   res.rand <- t(res.rand0) #tranpose (row <-> column)

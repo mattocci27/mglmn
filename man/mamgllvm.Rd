@@ -4,7 +4,7 @@
 \alias{mamgllvm}
 \title{Model averaging for multivariate generalized linear latent variable models}
 \usage{
-mamgllvm(data, y, family, scale = TRUE, AIC.restricted = FALSE)
+mamgllvm(data, y, family, scale = TRUE, rank = NULL)
 }
 \arguments{
 \item{data}{Data frame, typically of environmental variables. Rows for sites and colmuns for environmental variables.}
@@ -15,7 +15,7 @@ mamgllvm(data, y, family, scale = TRUE, AIC.restricted = FALSE)
 
 \item{scale}{Whether to scale independent variables (default = TRUE)}
 
-\item{AIC.restricted}{Whether to use AICc (TRUE) or AIC (FALSE) (default = TRUE).}
+\item{rank}{optional}
 }
 \value{
 A list of results
