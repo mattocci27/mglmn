@@ -16,6 +16,9 @@
 summary.mglmn <- function(object, top_n = 3, digits = 3, ...) {
 
   tb0 <- head(round(object$res.table, digits), top_n)
+  rank_name <- attr(object, "rank")
+  delta_rank <- paste0("delta.", rank_name)
+  wrank <- paste0("w", rank_name)
 
   models <- numeric(0)
   model <- tb0[,-1:-5]
@@ -35,12 +38,12 @@ summary.mglmn <- function(object, top_n = 3, digits = 3, ...) {
     models <- c(models, rhs)
   }
   
-  tb <- cbind(models, tb0[, c("AIC", "delta.aic", "wAIC")])
+  tb <- cbind(models, tb0[, c(paste(rank_name), paste(delta_rank), paste(wrank))])
 
   smry <- list()
   smry$`Top Models` <- tb
   names(smry)[1] <- paste("Top", top_n, "Models")
-  smry$importance  <- round(object$importance, digits)
+  smry$`Relative importance`  <- round(object$importance, digits)
   structure(smry, class = "summary.mglmn",
     model_name = deparse(substitute(object)), 
     print_digits = digits)

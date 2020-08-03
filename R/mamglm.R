@@ -106,10 +106,13 @@ mamglm <- function(data, y, family, scale = TRUE, rank = NULL){
       # because we apply glm manytimes, penalty should be applied manytimes too
       if (is.null(rank) || rank == "AICc" || rank == "aicc") {
         ranks <- sum(-2 * log.L.temp + 2  * n_par * n_samp / (n_samp - n_par - 1))
+        rank_name <- "AICc"
       } else if (rank == "AIC" || rank == "aic") {
         ranks <- sum(-2 * log.L.temp + 2 * n_par)
+        rank_name <- "AIC"
       } else if (rank == "BIC" || rank == "bic") {
         ranks <- sum(-2 * log.L.temp + n_par * log(n_samp))
+        rank_name <- "BIC"
       }
         model.aic <- c(model.aic, ranks)
     }
@@ -119,6 +122,9 @@ mamglm <- function(data, y, family, scale = TRUE, rank = NULL){
   delta.aic <- model.aic - min.aic
   wAIC <- exp(-delta.aic / 2) / sum(exp(-delta.aic / 2))
   res <- data.frame(AIC = model.aic, log.L = log.L, delta.aic, wAIC, n.vars = rep(1:n.vars, temp))
+  colnames(res)[1] <- rank_name
+  colnames(res)[3] <- paste0("delta.", rank_name)
+  colnames(res)[4] <- waic <- paste0("w", rank_name)
 
 ##counting vars
 #vars2 is matrix filled with 0 (row:sites,col:parameters)
@@ -143,14 +149,14 @@ mamglm <- function(data, y, family, scale = TRUE, rank = NULL){
 # if jth colnames of vars2, which is a parameter name, is identical to vars[[i]][k], which is a paramter name used in the analysis, vars2[i,j] is replaced by 1
 
   res <- cbind(res, vars2)
-  res <- res[order(res$AIC), ]
+  res <- res[order(res[,paste(rank_name)]), ]
 
   rownames(res) <- NULL
 
 #calculating weighted result of explanable variables
   res.temp <- res[, -1:-5]
   res2 <- apply(apply(res.temp, 2,
-                      function(x)res$wAIC * x), 2, sum)
+                      function(x)res[, paste(waic)] * x), 2, sum)
   out <- list(res.table = res, importance = res2, family = family)
   structure(out, class = "mglmn", rank = rank)
 }
