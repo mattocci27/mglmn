@@ -115,7 +115,7 @@ mamglm <- function(data, y, family, scale = TRUE, rank = NULL){
   min.aic <- min(model.aic)
   delta.aic <- model.aic - min.aic
   wAIC <- exp(-delta.aic / 2) / sum(exp(-delta.aic / 2))
-  res <- data.frame(AIC = model.aic, log.L = log.L, delta.aic, wAIC, R2, n.vars = rep(1:n.vars, temp))
+  res <- data.frame(AIC = model.aic, log.L = log.L, delta.aic, wAIC, n.vars = rep(1:n.vars, temp))
 
 ##counting vars
 #vars2 is matrix filled with 0 (row:sites,col:parameters)
