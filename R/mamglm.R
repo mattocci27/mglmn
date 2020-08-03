@@ -49,7 +49,7 @@ mamglm <- function(data, y, family, scale = TRUE, rank = NULL){
 
   data_bi <- data[, which(sapply(data, function(x) {all(x %in% 0:1)}))]
   if (ncol(data_bi)!=0) {
-    data_num <- tmp[, which(!sapply(tmp, function(x) {all(x %in% 0:1)}))]
+    data_num <- data[, which(!sapply(data, function(x) {all(x %in% 0:1)}))]
   } else data_num <- data
   data_fct <- data[, which(sapply(data, is.factor))]
   data_num <- data[, which(!sapply(data, function(x) {all(x %in% 0:1)}))]
