@@ -47,6 +47,16 @@ mamglm <- function(data, y, family, scale = TRUE, rank = NULL){
   }
 
   if (scale) data <- as.data.frame(scale(data))
+
+  data_fct <- data[, which(sapply(data, is.factor))]
+  data_dbl <- data[, which(sapply(data, is.numeric))]
+  data_dbl2 <- data_dbl^2
+  #colnames(data_dbl2 ) <- paste0(colnames(data_dbl), "^2")
+  colnames(data_dbl2 ) <- paste0("I(",colnames(data_dbl), "^2)")
+  data <- cbind(data_dbl, data_dbl2, data_fct)
+
+  #print(data)
+
   my.vars <- colnames(data)
   n.vars <- length(my.vars)
   vars.list <- list()
@@ -54,43 +64,49 @@ mamglm <- function(data, y, family, scale = TRUE, rank = NULL){
     vars.list[[i]] <- combn(my.vars, i)
   }
 
+  #print(vars.list)
 #numbers of combination for each sample size
   temp <- sapply(vars.list, ncol)
-
 #AIC for each model
   model.aic <- NULL
   log.L <- NULL
+ # R2 <- NULL
   vars <- list()
   k <- 0
   vars2 <- matrix(numeric(n.vars * sum(temp)), nrow = sum(temp), ncol = n.vars)
-
 # number of paremeter = i+1 (one means intercept)
 # sample size = nrow(data)
 # number of species = ncol(data)
-#AICc = -2*logLike + 2*n.para*n.sample/(n.sample-n.para-1)
+# AICc = -2*logLike + 2*n.para*n.sample/(n.sample-n.para-1)
+  n_samp <- nrow(data)
+  n_sp <- ncol(data)
   for (i in 1:n.vars){
+    n_par <- i + 1
     for (j in 1:temp[i]){
       k <- k + 1
       vars.temp <- vars.list[[i]][, j]
       vars[[k]] <- vars.temp
       f.str <- make.formula(y, vars.temp)
+  #    print(f.str)
       if (family == "gaussian") fit.temp <- manylm(f.str, data = data)
       else fit.temp <- manyglm(f.str, data = data, family = family)
 
       log.L.temp <- logLik(fit.temp)
       log.L <- c(log.L, sum(log.L.temp))
+       
+      yy <- as.numeric(get(y))
+#      R2.tmp <- 1 - sum((yy - fitted(fit.temp))^2) / sum((yy - mean(yy))^2)
+      #R2.tmp <- sum((yy - fitted(fit.temp))^2 /  mean(yy)) / length(yy)
+      #R2 <- c(R2, R2.tmp)
 
+      # put penalty terms inside the sum
+      # because we apply glm manytimes, penalty should be applied manytimes
       if (is.null(rank) || rank == "AICc" || rank == "aicc") {
-        #ranks <- sum(-2 * log.L.temp + 2 * nrow(data) * (i + 1) /
-        #                      (nrow(data) - (i + 1) - 1)) / ncol(data)
-        ranks <- sum(-2 * log.L.temp + 2 * nrow(data) * (i + 1) /
-                              (nrow(data) - (i + 1) - 1))
+        ranks <- sum(-2 * log.L.temp + 2  * n_par * n_samp / (n_samp - n_par - 1))
       } else if (rank == "AIC" || rank == "aic") {
-       # ranks <- sum(-2 * log.L.temp + 2 * (i + 1)) / ncol(data)
-        ranks <- sum(-2 * log.L.temp + 2 * (i + 1)) 
+        ranks <- sum(-2 * log.L.temp + 2 * n_par)
       } else if (rank == "BIC" || rank == "bic") {
-       # ranks <- sum(-2 * log.L.temp + (i + 1) * log(nrow(data))) / ncol(data)
-        ranks <- sum(-2 * log.L.temp + (i + 1) * log(nrow(data)))
+        ranks <- sum(-2 * log.L.temp + n_par * log(n_samp))
       }
         model.aic <- c(model.aic, ranks)
     }
@@ -99,7 +115,7 @@ mamglm <- function(data, y, family, scale = TRUE, rank = NULL){
   min.aic <- min(model.aic)
   delta.aic <- model.aic - min.aic
   wAIC <- exp(-delta.aic / 2) / sum(exp(-delta.aic / 2))
-  res <- data.frame(AIC = model.aic, log.L = log.L, delta.aic, wAIC, n.vars = rep(1:n.vars, temp))
+  res <- data.frame(AIC = model.aic, log.L = log.L, delta.aic, wAIC, R2, n.vars = rep(1:n.vars, temp))
 
 ##counting vars
 #vars2 is matrix filled with 0 (row:sites,col:parameters)
