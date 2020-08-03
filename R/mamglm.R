@@ -46,14 +46,17 @@ mamglm <- function(data, y, family, scale = TRUE, rank = NULL){
     stop("Please use 'AIC', 'AICc' or 'BIC' for rank estimates")
   }
 
-  if (scale) data <- as.data.frame(scale(data))
 
+  data_bi <- data[, which(sapply(data, function(x) {all(x %in% 0:1)}))]
+  data_num <- data[, which(!sapply(data, function(x) {all(x %in% 0:1)}))]
   data_fct <- data[, which(sapply(data, is.factor))]
-  data_dbl <- data[, which(sapply(data, is.numeric))]
+  # skip scaling for binary and factor data
+  if (scale) data_num <- as.data.frame(scale(data_num))
+  data_dbl <- data_num[, which(sapply(data_num, is.numeric))]
   data_dbl2 <- data_dbl^2
   #colnames(data_dbl2 ) <- paste0(colnames(data_dbl), "^2")
-  colnames(data_dbl2 ) <- paste0("I(",colnames(data_dbl), "^2)")
-  data <- cbind(data_dbl, data_dbl2, data_fct)
+  colnames(data_dbl2) <- paste0("I(",colnames(data_dbl), "^2)")
+  data <- cbind(data_dbl, data_dbl2, data_bi, data_fct)
 
   #print(data)
 
@@ -100,7 +103,7 @@ mamglm <- function(data, y, family, scale = TRUE, rank = NULL){
       #R2 <- c(R2, R2.tmp)
 
       # put penalty terms inside the sum
-      # because we apply glm manytimes, penalty should be applied manytimes
+      # because we apply glm manytimes, penalty should be applied manytimes too
       if (is.null(rank) || rank == "AICc" || rank == "aicc") {
         ranks <- sum(-2 * log.L.temp + 2  * n_par * n_samp / (n_samp - n_par - 1))
       } else if (rank == "AIC" || rank == "aic") {
