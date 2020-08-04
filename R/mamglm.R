@@ -19,7 +19,7 @@
 #' @references Wang, Y., Naumann, U., Wright, S.T. & Warton, D.I. (2012) mvabund- an R package for model-based analysis of multivariate abundance data. Methods in Ecology and Evolution, 3, 471-474.
 #' @references Warton, D.I., Wright, S.T. & Wang, Y. (2012) Distance-based multivariate analyses confound location and dispersion effects. Methods in Ecology and Evolution, 3, 89-101.
 #' @references Nakamura, A., C. J. Burwell, C. L. Lambkin, M. Katabuchi, A. McDougall, R. J. Raven, and V. J. Neldner. (2015) The role of human disturbance in island biogeography of arthropods and plants: an information theoretic approach. Journal of Biogeography 42:1406-1417.
-#' @seealso\code{\link{maglm}}, \code{\link{ses.mamglm}}, \code{\link{ses.mamgllvm}}
+#' @seealso\code{\link{maglm}}, \code{\link{ses.mglmn}}
 #' @examples
 #' #load species composition and environmental data
 #' library(mvabund)
@@ -165,5 +165,9 @@ mamglm <- function(data, y, family, quadratic = TRUE, scale = TRUE, rank = NULL)
   res2 <- apply(apply(res.temp, 2,
                       function(x)res[, paste(waic)] * x), 2, sum)
   out <- list(res.table = res, importance = res2, family = family, y = y, data = data)
-  structure(out, class = "mglmn", rank = rank)
+  structure(out, 
+            class = "mglmn",
+            family = family,
+            model = "mamglm",
+            rank = rank_name)
 }

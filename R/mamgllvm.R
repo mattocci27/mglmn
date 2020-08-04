@@ -25,7 +25,7 @@
 #'
 #' Warton, D. I., Guillaume Blanchet, F., O'Hara, R. B., Ovaskainen, O., Taskinen, S., Walker, S. C. and Hui, F. K. C. (2015). So many variables: Joint modeling in community ecology. Trends in Ecology & Evolution, 30:766-779.
 #'
-#' @seealso\code{\link{maglm}}, \code{\link{ses.mamglm}}, \code{\link{ses.mamgllvm}}
+#' @seealso\code{\link{maglm}}, \code{\link{ses.mglmn}}
 #' @examples
 #' #load species composition and environmental data
 #' library(mvabund)
@@ -181,9 +181,10 @@ mamgllvm <- function(data, y, family, quadratic = TRUE, scale = TRUE, rank = NUL
   res.temp <- res[, -1:-5]
   res2 <- apply(apply(res.temp, 2,
                       function(x)res[, paste(waic)] * x), 2, sum)
-  out <- list(res.table = res, importance = res2, family = family, data = data)
+  out <- list(res.table = res, importance = res2, family = family, y = y, data = data)
   structure(out, 
             class = "mglmn",
             family = family,
-            rank = rank)
+            model = "mamgllvm",
+            rank = rank_name)
 }

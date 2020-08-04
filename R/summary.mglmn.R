@@ -37,7 +37,7 @@ summary.mglmn <- function(object, top_n = 3, digits = 3, ...) {
     }
     models <- c(models, rhs)
   }
-  
+
   tb <- cbind(models, tb0[, c(paste(rank_name), paste(delta_rank), paste(wrank))])
 
   smry <- list()

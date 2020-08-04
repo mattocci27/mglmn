@@ -18,11 +18,8 @@ Model averaging for multivariate GLM based on information theory.
 \item{\code{\link{mamgllvm}}}{
 Model averaging for multivariate GLLVM based on information theory.
 }
-\item{\code{\link{ses.mamglm}}}{
+\item{\code{\link{ses.mglmn}}}{
 Standardized effect size of relative importance values for model averaging multivariate GLM.
-}
-\item{\code{\link{ses.mamgllvm}}}{
-Standardized effect size of relative importance values for model averaging multivariate GLLVM.
 }
 }
 }
