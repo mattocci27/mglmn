@@ -4,18 +4,12 @@
 \alias{ses.mamglm}
 \title{Standardized effect size of relative importance values for mamglm}
 \usage{
-ses.mamglm(data, y, family, scale = TRUE, rank = NULL, par = FALSE, runs = 999)
+ses.mamglm(object, top_n = 5, par = FALSE, runs = 99)
 }
 \arguments{
-\item{data}{Data frame, typically of environmental variables. Rows for sites and colmuns for environmental variables.}
+\item{object}{Data frame, typically of environmental variables. Rows for sites and colmuns for environmental variables.}
 
-\item{y}{Name of 'site x spcies matrix' (col for species, row for sites) (character)}
-
-\item{family}{the 'family' object used.}
-
-\item{scale}{Whether to scale independent variables (default = TRUE)}
-
-\item{rank}{rank}
+\item{top_n}{Name of 'site x spcies matrix' (col for species, row for sites) (character)}
 
 \item{par}{Wheter to use parallel computing (default = FALSE)}
 

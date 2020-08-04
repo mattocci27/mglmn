@@ -111,7 +111,7 @@ mamgllvm <- function(data, y, family, quadratic = TRUE, scale = TRUE, rank = NUL
       }
 
       fit.temp <- NULL
-      fit.temp <- try(fit_fun(), silent = FALSE)
+      fit.temp <- try(fit_fun(), silent = TRUE)
 
       if (class(fit.temp) == "try-error") {
         message("Use starting.val = 'zero' instead of 'res'")
@@ -181,7 +181,7 @@ mamgllvm <- function(data, y, family, quadratic = TRUE, scale = TRUE, rank = NUL
   res.temp <- res[, -1:-5]
   res2 <- apply(apply(res.temp, 2,
                       function(x)res[, paste(waic)] * x), 2, sum)
-  out <- list(res.table = res, importance = res2, family = family)
+  out <- list(res.table = res, importance = res2, family = family, data = data)
   structure(out, 
             class = "mglmn",
             family = family,

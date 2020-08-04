@@ -7,11 +7,8 @@
 #' @name ses.mamglm
 #'
 #' @export
-#' @param data Data frame, typically of environmental variables. Rows for sites and colmuns for environmental variables.
-#' @param y Name of 'site x spcies matrix' (col for species, row for sites) (character)
-#' @param scale Whether to scale independent variables (default = TRUE)
-#' @param family the 'family' object used.
-#' @param rank rank
+#' @param object Data frame, typically of environmental variables. Rows for sites and colmuns for environmental variables.
+#' @param top_n Name of 'site x spcies matrix' (col for species, row for sites) (character)
 #' @param par Wheter to use parallel computing (default = FALSE)
 #' @param runs Number of randomizations.
 #' @return A data frame of resluts for each term
@@ -47,40 +44,30 @@
 #'            par = TRUE, family = "binomial", runs=4)
 #' }
 
-ses.mamglm <- function(data, y, family, scale = TRUE,
-                      rank = NULL, par = FALSE, runs = 999){
-  if (scale) data <- as.data.frame(scale(data))
-  res.obs <- mamglm(data,y = y,scale = scale, family,
-                    rank = rank)$importance
+ses.mamglm <- function(object, top_n = 5, par = FALSE, runs = 99){
+
+  res.obs <- mamglm_select(object, top_n = top_n)
+
   # runs<-2#
   null.env.list <- list()
   # data <- env2
   # before<-proc.time()
   for (i in 1:runs){
-    data.temp <- data
+    data.temp <- object$data
     data.temp$temp <- rnorm(nrow(data.temp))
     data.temp <- data.temp[order(data.temp$temp), ]
     null.env.list[[i]] <- data.temp[, -ncol(data.temp)]
   }
-
+  
   # y <- "pre.abs"
   # family <-"binomial"
   # AIC.restricted=F
   if (par == FALSE) {
     res.rand0 <- sapply(null.env.list,
-                        function(x){mamglm(x, y = y, 
-                                           scale = scale, 
-                                           family,
-                                           rank = rank)$importance
-                  })
+                        function(x){mamglm_select(object, data = x)})$importance
   } else {
     res.rand0 <- sfSapply(null.env.list,
-                          function(x){mamglm(x,
-                                             y = y,
-                                             scale = scale,
-                                             family,
-                                             rank = rank)$importance
-                                             })
+                        function(x){mamglm_select(object, data = x)})$importance
   }
   res.rand <- t(res.rand0) #tranpose (row <-> column)
   res.rand.mean <- apply(res.rand, 2, mean, na.rm = T)
@@ -88,4 +75,83 @@ ses.mamglm <- function(data, y, family, scale = TRUE,
   SES <- (res.obs - res.rand.mean) / res.rand.sd
   res.obs.rank <- apply(rbind(res.obs, res.rand), 2, rank)[1, ]
   data.frame(res.obs, res.rand.mean, res.rand.sd, SES, res.obs.rank, runs)
+}
+
+
+mamglm_select <- function(object, 
+                          data = NULL,
+                          top_n = top_n) {
+  
+  models <- summary(object, top_n = top_n)[[1]]$models
+  family <- object$family
+  rank <- attr(object, "rank")
+  y <- object$y
+   
+  if (is.null(data)) data  <- object$data 
+
+  n_par <- sapply(strsplit(models, "\\+"), length)
+
+  model.aic <- NULL
+  log.L <- NULL
+  n_samp <- nrow(data)
+  n_sp <- ncol(data)
+  for (i in 1:top_n) {
+    f.str <- noquote(paste0(y, "~", models[i]))
+    if (family == "gaussian") fit.temp <- manylm(f.str, data = data)
+        else fit.temp <- manyglm(f.str, data = data, family = family)
+
+    log.L.temp <- logLik(fit.temp)
+    log.L <- c(log.L, sum(log.L.temp))
+     
+    # put penalty terms inside the sum
+    # because we apply glm manytimes, penalty should be applied manytimes too
+    if (is.null(rank) || rank == "AICc" || rank == "aicc") {
+      ranks <- sum(-2 * log.L.temp + 2  * n_par[i] * n_samp / (n_samp - n_par[i] - 1))
+      rank_name <- "AICc"
+    } else if (rank == "AIC" || rank == "aic") {
+      ranks <- sum(-2 * log.L.temp + 2 * n_par[i])
+      rank_name <- "AIC"
+    } else if (rank == "BIC" || rank == "bic") {
+      ranks <- sum(-2 * log.L.temp + n_par[i] * log(n_samp))
+      rank_name <- "BIC"
+    }
+      model.aic <- c(model.aic, ranks)
+  }
+
+  min.aic <- min(model.aic)
+  delta.aic <- model.aic - min.aic
+  wAIC <- exp(-delta.aic / 2) / sum(exp(-delta.aic / 2))
+  res <- data.frame(AIC = model.aic, log.L = log.L, delta.aic, wAIC, n.vars = n_par)
+  colnames(res)[1] <- rank_name
+  colnames(res)[3] <- paste0("delta.", rank_name)
+  colnames(res)[4] <- waic <- paste0("w", rank_name)
+
+  
+
+  vars <- sapply(models, function(x)strsplit(x, " \\+ "))
+
+##counting vars
+#vars2 is matrix filled with 0 (row:sites,col:parameters)
+  vars2 <- matrix(numeric(ncol(data) * top_n), nrow = top_n, ncol = ncol(data))
+  colnames(vars2) <- colnames(data)
+  n.vars <- ncol(data)
+  n.size <- sapply(vars, length)
+
+  for (i in 1:nrow(vars2)){ # each row (model number)
+    for (j in 1:n.vars){ # each column (paramter)
+      for (k in 1:n.size[i]){ # upto number of paramters
+        if (colnames(vars2)[j] == vars[[i]][k]) vars2[i,j] <- 1
+      }
+    }
+  }
+
+  res <- cbind(res, vars2)
+  res <- res[order(res[,paste(rank_name)]), ]
+  rownames(res) <- NULL
+#calculating weighted result of explanable variables
+  res.temp <- res[, -1:-5]
+  res2 <- apply(apply(res.temp, 2,
+                      function(x)res[, paste(waic)] * x), 2, sum)
+  out <- list(res.table = res, importance = res2, family = family, y = y, data = data)
+  structure(out, class = "mglmn", rank = rank)
 }

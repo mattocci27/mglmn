@@ -164,6 +164,6 @@ mamglm <- function(data, y, family, quadratic = TRUE, scale = TRUE, rank = NULL)
   res.temp <- res[, -1:-5]
   res2 <- apply(apply(res.temp, 2,
                       function(x)res[, paste(waic)] * x), 2, sum)
-  out <- list(res.table = res, importance = res2, family = family)
+  out <- list(res.table = res, importance = res2, family = family, y = y, data = data)
   structure(out, class = "mglmn", rank = rank)
 }
