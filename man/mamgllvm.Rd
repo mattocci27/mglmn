@@ -4,7 +4,7 @@
 \alias{mamgllvm}
 \title{Model averaging for multivariate generalized linear latent variable models}
 \usage{
-mamgllvm(data, y, family, scale = TRUE, rank = NULL)
+mamgllvm(data, y, family, quadratic = TRUE, scale = TRUE, rank = NULL)
 }
 \arguments{
 \item{data}{Data frame, typically of environmental variables. Rows for sites and colmuns for environmental variables.}
@@ -12,6 +12,8 @@ mamgllvm(data, y, family, scale = TRUE, rank = NULL)
 \item{y}{Name of 'site x spcies matrix' (col for species, row for sites) (character)}
 
 \item{family}{the 'family' object used.}
+
+\item{quadratic}{Whether to test quadratic responses (default = TRUE)}
 
 \item{scale}{Whether to scale independent variables (default = TRUE)}
 

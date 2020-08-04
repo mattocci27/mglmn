@@ -8,6 +8,7 @@
 #' @param data Data frame, typically of environmental variables. Rows for sites and colmuns for environmental variables.
 #' @param y Name of 'site x spcies matrix' (col for species, row for sites) (character)
 #' @param family the 'family' object used.
+#' @param quadratic Whether to test quadratic responses (default = TRUE)
 #' @param scale Whether to scale independent variables (default = TRUE)
 #' @param rank optional
 #' @return A list of results
@@ -37,7 +38,7 @@
 #'
 #' mamglm(data = env_assem, y = "pre.abs", family = "binomial")
 
-mamglm <- function(data, y, family, scale = TRUE, rank = NULL){
+mamglm <- function(data, y, family, quadratic = TRUE, scale = TRUE, rank = NULL){
   
   if (is.null(rank)) rank <- "AICc"
   
@@ -45,7 +46,6 @@ mamglm <- function(data, y, family, scale = TRUE, rank = NULL){
       rank != "aic" && rank != "aicc" && rank != "bic") {
     stop("Please use 'AIC', 'AICc' or 'BIC' for rank estimates")
   }
-
 
   data_bi <- data[, which(sapply(data, function(x) {all(x %in% 0:1)}))]
   if (ncol(data_bi)!=0) {
@@ -60,7 +60,10 @@ mamglm <- function(data, y, family, scale = TRUE, rank = NULL){
   data_dbl2 <- data_dbl^2
   #colnames(data_dbl2 ) <- paste0(colnames(data_dbl), "^2")
   colnames(data_dbl2) <- paste0("I(",colnames(data_dbl), "^2)")
-  data <- cbind(data_dbl, data_dbl2, data_bi, data_fct)
+
+  if (quadratic) {
+    data <- cbind(data_dbl, data_dbl2, data_bi, data_fct)
+  } else data <- cbind(data_dbl, data_bi, data_fct)
 
   #print(data)
 

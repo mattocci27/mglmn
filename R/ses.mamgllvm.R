@@ -36,8 +36,8 @@
 #' pre.abs <- mvabund(pre.abs0)
 #'
 #' #to execute calculations on a single core:
-#' ses.mamgllvm(data = env_assem, y = "pre.abs",
-#'            par = FALSE, family = "binomial", runs=4)
+#' #ses.mamgllvm(data = env_assem, y = "pre.abs",
+#' #           par = FALSE, family = "binomial", runs=4)
 #'
 #' \dontrun{
 #' #to execute parallel calculations:

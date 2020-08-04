@@ -46,5 +46,6 @@ summary.mglmn <- function(object, top_n = 3, digits = 3, ...) {
   smry$`Relative importance`  <- round(object$importance, digits)
   structure(smry, class = "summary.mglmn",
     model_name = deparse(substitute(object)), 
+    family = attr(object, "family"),
     print_digits = digits)
 }

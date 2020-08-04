@@ -19,3 +19,4 @@ Repository: CRAN
 RoxygenNote: 7.1.1
 Suggests: 
     testthat
+Encoding: UTF-8

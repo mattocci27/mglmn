@@ -2,9 +2,12 @@
 % Please edit documentation in R/make.formula.R
 \name{make.formula}
 \alias{make.formula}
+\alias{make.formula2}
 \title{Utility function}
 \usage{
 make.formula(lhs, vars.vec, rand.vec = NULL)
+
+make.formula2(lhs, vars.vec, rand.vec = NULL)
 }
 \arguments{
 \item{lhs}{Numeric vector of dependent variables.}

@@ -30,6 +30,6 @@
 #' @importFrom mvabund manylm manyglm
 #' @importFrom gllvm gllvm
 #' @import snowfall
-#' @importFrom stats glm logLik rnorm sd
+#' @importFrom stats glm logLik rnorm sd formula
 #' @importFrom utils combn
 NULL

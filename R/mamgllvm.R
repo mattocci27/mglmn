@@ -8,6 +8,7 @@
 #' @param data Data frame, typically of environmental variables. Rows for sites and colmuns for environmental variables.
 #' @param y Name of 'site x spcies matrix' (col for species, row for sites) (character)
 #' @param family the 'family' object used.
+#' @param quadratic Whether to test quadratic responses (default = TRUE)
 #' @param scale Whether to scale independent variables (default = TRUE)
 #' @param rank optional
 #' @return A list of results
@@ -42,18 +43,37 @@
 #' pre.abs <- mvabund(pre.abs0)
 #'
 #' mamgllvm(data = env_assem, y = "pre.abs", family = "binomial")
-mamgllvm <- function(data, y, family, scale = TRUE, rank = NULL){
+mamgllvm <- function(data, y, family, quadratic = TRUE, scale = TRUE, rank = NULL){
 
   if (!is.null(rank) && rank != "AIC" && rank != "AICc" && rank != "BIC" && 
       rank != "aic" && rank != "aicc" && rank != "bic") {
     stop("Please use 'AIC', 'AICc' or 'BIC' for rank estimates")
   }
 
-  if (scale) data <- as.data.frame(scale(data))
-    my.vars <- colnames(data)
-    n.vars <- length(my.vars)
-    vars.list <- list()
-    for (i in 1:n.vars){
+  data_bi <- data[, which(sapply(data, function(x) {all(x %in% 0:1)}))]
+  if (ncol(data_bi)!=0) {
+    data_num <- data[, which(!sapply(data, function(x) {all(x %in% 0:1)}))]
+  } else data_num <- data
+  data_fct <- data[, which(sapply(data, is.factor))]
+  data_num <- data[, which(!sapply(data, function(x) {all(x %in% 0:1)}))]
+  data_fct <- data[, which(sapply(data, is.factor))]
+  # skip scaling for binary and factor data
+  if (scale) data_num <- as.data.frame(scale(data_num))
+  data_dbl <- data_num[, which(sapply(data_num, is.numeric))]
+  data_dbl2 <- data_dbl^2
+  #colnames(data_dbl2 ) <- paste0(colnames(data_dbl), "^2")
+  colnames(data_dbl2) <- paste0("I(",colnames(data_dbl), "^2)")
+
+  if (quadratic) {
+    data <- cbind(data_dbl, data_dbl2, data_bi, data_fct)
+  } else data <- cbind(data_dbl, data_bi, data_fct)
+  
+  data <- as.data.frame(data)
+
+  my.vars <- colnames(data)
+  n.vars <- length(my.vars)
+  vars.list <- list()
+  for (i in 1:n.vars){
     vars.list[[i]] <- combn(my.vars, i)
   }
 
@@ -76,22 +96,19 @@ mamgllvm <- function(data, y, family, scale = TRUE, rank = NULL){
       vars.temp <- vars.list[[i]][, j]
       vars[[k]] <- vars.temp
       #f.str <- make.formula(get(y), vars.temp)
-     # f.str <- make.formula(y, vars.temp)
+      f.str <- make.formula2(y, vars.temp)
     # data2 <- data[, vars.temp]
       data2 <- as.data.frame(data[, vars.temp])
       colnames(data2) <- vars.temp
 
-    #  message("y")
-    #  get(y) %>% print
-    #  message("data2")
-    #  data2 %>% print
-    #  message("family")
-    #  print(family)
+      print(data)
+      print(f.str)
 
       fit_fun <- function(){
         gllvm(
           y = get(y),
-          X = data2, 
+          X = data, 
+          formula = formula(f.str),
           family = family,
           starting.val = "res")
       }
@@ -103,7 +120,8 @@ mamgllvm <- function(data, y, family, scale = TRUE, rank = NULL){
         message("Use starting.val = 'zero' instead of 'res'")
         fit.temp <- gllvm(
           y = get(y),
-          X = data2, 
+          X = data, 
+          formula = formula(f.str),
           family = family,
           starting.val = "zero")
       }
@@ -115,10 +133,13 @@ mamgllvm <- function(data, y, family, scale = TRUE, rank = NULL){
 
       if (is.null(rank) || rank == "AICc" || rank == "aicc") {
         ranks <- fit.summary$AICc
+        rank_name <- "AICc"
       } else if (rank == "AIC" || rank == "aic") {
         ranks <- fit.summary$AIC
+        rank_name <- "AIC"
       } else if (rank == "BIC" || rank == "bic") {
         ranks <- fit.summary$BIC
+        rank_name <- "BIC"
       }
         model.aic <- c(model.aic, ranks)
     }
@@ -129,7 +150,9 @@ mamgllvm <- function(data, y, family, scale = TRUE, rank = NULL){
   wAIC <- exp(-delta.aic / 2) / sum(exp(-delta.aic / 2))
 
   res <- data.frame(AIC = model.aic, log.L = log.L, delta.aic, wAIC, n.vars = rep(1:n.vars, temp))
-
+  colnames(res)[1] <- rank_name
+  colnames(res)[3] <- paste0("delta.", rank_name)
+  colnames(res)[4] <- waic <- paste0("w", rank_name)
 ##counting vars
 #vars2 is matrix filled with 0 (row:sites,col:parameters)
   vars2 <- matrix(numeric(n.vars * sum(temp)), nrow = sum(temp), ncol = n.vars)
@@ -153,14 +176,17 @@ mamgllvm <- function(data, y, family, scale = TRUE, rank = NULL){
 # if jth colnames of vars2, which is a parameter name, is identical to vars[[i]][k], which is a paramter name used in the analysis, vars2[i,j] is replaced by 1
 
   res <- cbind(res, vars2)
-  res <- res[order(res$AIC), ]
+  res <- res[order(res[,paste(rank_name)]), ]
 
   rownames(res) <- NULL
 
 #calculating weighted result of explanable variables
   res.temp <- res[, -1:-5]
   res2 <- apply(apply(res.temp, 2,
-                      function(x)res$wAIC * x), 2, sum)
+                      function(x)res[, paste(waic)] * x), 2, sum)
   out <- list(res.table = res, importance = res2, family = family)
-  structure(out, class = "mglmn")
+  structure(out, 
+            class = "mglmn",
+            family = family,
+            rank = rank)
 }
