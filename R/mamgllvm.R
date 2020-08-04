@@ -101,9 +101,6 @@ mamgllvm <- function(data, y, family, quadratic = TRUE, scale = TRUE, rank = NUL
       data2 <- as.data.frame(data[, vars.temp])
       colnames(data2) <- vars.temp
 
-      print(data)
-      print(f.str)
-
       fit_fun <- function(){
         gllvm(
           y = get(y),
