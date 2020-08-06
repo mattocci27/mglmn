@@ -5,60 +5,26 @@
 # #' @export
 # #' @param lhs Numeric vector of dependent variables.
 # #' @param vars.vec Character vector of independet variables.
-# #' @param rand.vec Character vector of random variables (default = NULL).
 # #' @return an object of class '"formula"'
 # #' @seealso \code{\link{maglm}}, \code{\link{mamglm}}
 
-make.formula <- function(lhs, vars.vec, rand.vec = NULL){
-if (is.null(rand.vec)) {
+make.formula <- function(lhs, vars.vec){
   if (length(vars.vec) < 2)
-  return(noquote(paste(lhs, '~', vars.vec)))
-
+  return(as.formula(paste(lhs, '~', vars.vec), env = parent.frame()))
   rhs <- vars.vec[1]
   for (v in vars.vec[2:length(vars.vec)])
     rhs <- paste(rhs, '+', v)
-    noquote(paste(lhs, '~', rhs))
-} else {
-  if (length(vars.vec) < 2){
-    rhs <- vars.vec[1]
-    for (r in rand.vec[1:length(rand.vec)])
-      rhs <- paste(rhs, ' + (1|', r, ')' , sep = "")
-    return(noquote(paste(lhs, '~',vars.vec, '~', rhs)))
-  }
-
-  rhs <- vars.vec[1]
-  for (v in vars.vec[2:length(vars.vec)])
-    rhs <- paste(rhs, '+', v)
-  for (r in rand.vec[1:length(rand.vec)])
-    rhs <- paste(rhs, ' + (1|', r, ')', sep = "")
-    noquote(paste(lhs, '~', rhs))
-  }
+    as.formula(paste(lhs, '~', rhs), env = parent.frame())
 }
 
 # #' @export
 # #' @rdname make.formula
-make.formula2 <- function(lhs, vars.vec, rand.vec = NULL){
-if (is.null(rand.vec)) {
+make.formula2 <- function(vars.vec){
   if (length(vars.vec) < 2)
-  return(noquote(paste('~', vars.vec)))
+  return(as.formula(paste('~', vars.vec), env = parent.frame()))
 
   rhs <- vars.vec[1]
   for (v in vars.vec[2:length(vars.vec)])
     rhs <- paste(rhs, '+', v)
-    noquote(paste('~', rhs))
-} else {
-  if (length(vars.vec) < 2){
-    rhs <- vars.vec[1]
-    for (r in rand.vec[1:length(rand.vec)])
-      rhs <- paste(rhs, ' + (1|', r, ')' , sep = "")
-    return(noquote(paste('~',vars.vec, '~', rhs)))
-  }
-
-  rhs <- vars.vec[1]
-  for (v in vars.vec[2:length(vars.vec)])
-    rhs <- paste(rhs, '+', v)
-  for (r in rand.vec[1:length(rand.vec)])
-    rhs <- paste(rhs, ' + (1|', r, ')', sep = "")
-    noquote(paste('~', rhs))
-  }
+    as.formula(paste('~', rhs))
 }

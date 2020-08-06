@@ -9,7 +9,7 @@ mamgllvm(data, y, family, quadratic = TRUE, scale = TRUE, rank = NULL)
 \arguments{
 \item{data}{Data frame, typically of environmental variables. Rows for sites and colmuns for environmental variables.}
 
-\item{y}{Name of 'site x spcies matrix' (col for species, row for sites) (character)}
+\item{y}{Matrix,  site x spcies matrix (col or species, row for sites)}
 
 \item{family}{the 'family' object used.}
 
@@ -40,14 +40,14 @@ env_assem <- capcay$env_assem[, 1:2]
 freq.abs <- mvabund(log(capcay$abund + 1))
 
 #to fit a gaussian regression model to frequency data:
-mamgllvm(data = env_assem, y = "freq.abs", family = "gaussian")
+mamgllvm(data = env_assem, y = freq.abs, family = "gaussian")
 
 #to fit a binomial regression model to presence/absence data"
 pre.abs0 <- capcay$abund
 pre.abs0[pre.abs0 > 0] = 1
 pre.abs <- mvabund(pre.abs0)
 
-mamgllvm(data = env_assem, y = "pre.abs", family = "binomial")
+mamgllvm(data = env_assem, y = pre.abs, family = "binomial")
 }
 \references{
 Burnham, K.P. & Anderson, D.R. (2002) Model selection and multi-model inference: a practical information-theoretic approach. Springer Verlag, New York.

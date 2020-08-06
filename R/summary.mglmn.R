@@ -15,6 +15,12 @@
 
 summary.mglmn <- function(object, top_n = 3, digits = 3, ...) {
 
+  top_n_ori <- top_n
+  if (nrow(object$res.table) < top_n) {
+    top_n <- nrow(object$res.table)
+    message(paste(top_n_ori, "is larger than the total model numbers. Use top", top_n, "models instead."))
+  }
+
   tb0 <- head(round(object$res.table, digits), top_n)
   rank_name <- attr(object, "rank")
   delta_rank <- paste0("delta.", rank_name)
@@ -44,8 +50,9 @@ summary.mglmn <- function(object, top_n = 3, digits = 3, ...) {
   smry$`Top Models` <- tb
   names(smry)[1] <- paste("Top", top_n, "Models")
   smry$`Relative importance`  <- round(object$importance, digits)
-  structure(smry, class = "summary.mglmn",
-    model_name = deparse(substitute(object)), 
-    family = attr(object, "family"),
-    print_digits = digits)
+  structure(smry, 
+            class = "summary.mglmn",
+            model_name = deparse(substitute(object)), 
+            family = attr(object, "family"),
+            print_digits = digits)
 }

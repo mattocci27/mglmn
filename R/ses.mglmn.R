@@ -32,7 +32,7 @@
 #' pre.abs0[pre.abs0 > 0] = 1
 #' pre.abs <- as.matrix(pre.abs0)
 #'
-#' fit <- mamglm(data = env_assem, y = "pre.abs", family = "binomial")
+#' fit <- mamglm(data = env_assem, y = pre.abs, family = "binomial")
 #' #to execute calculations on a single core:
 #' ses.mglmn(fit, runs=4)
 #'
@@ -40,24 +40,25 @@
 #' #to execute parallel calculations:
 #' sfInit(parallel = TRUE, cpus = 4)
 #' sfExportAll()
-#' ses.mamglm(data = env_assem, y = "pre.abs",
+#' ses.mamglm(data = env_assem, y = pre.abs,
 #'            par = TRUE, family = "binomial", runs=4)
 #' }
 
 ses.mglmn <- function(object, top_n = 5, par = FALSE, runs = 99){
 
+  top_n_ori <- top_n
+  if (nrow(object$res.table) < top_n) {
+    top_n <- nrow(object$res.table)
+    message(paste(top_n_ori, "is larger than the total model numbers. Use top", top_n, "models instead."))
+  }
 
   # runs<-2#
-  null.env.list <- list()
   # data <- env2
   # before<-proc.time()
-  for (i in 1:runs){
-    data.temp <- object$data
-    data.temp$temp <- rnorm(nrow(data.temp))
-    data.temp <- data.temp[order(data.temp$temp), ]
-    null.env.list[[i]] <- data.temp[, -ncol(data.temp)]
-  }
-  
+  rand_y <- lapply(1:runs,
+    function(x)randomizeMatrix(object$y, null.model = "frequency")
+  )
+
   # y <- "pre.abs"
   # family <-"binomial"
   # AIC.restricted=F
@@ -66,18 +67,18 @@ ses.mglmn <- function(object, top_n = 5, par = FALSE, runs = 99){
     res.obs <- mamglm_select(object, top_n = top_n)$importance
     if (par == FALSE) {
       res.rand0 <- sapply(
-                      null.env.list,
+                      rand_y,
                       function(x){mamglm_select(
                                     object = object, 
-                                    data = x,
+                                    y = x,
                                     top_n = top_n
                                     )$importance})
     } else {
       res.rand0 <- sfSapply(
-                      null.env.list,
+                      rand_y,
                       function(x){mamglm_select(
                                     object = object, 
-                                    data = x,
+                                    y = x,
                                     top_n = top_n
                                     )$importance})
     }
@@ -85,18 +86,18 @@ ses.mglmn <- function(object, top_n = 5, par = FALSE, runs = 99){
     res.obs <- mamgllvm_select(object, top_n = top_n)$importance
     if (par == FALSE) {
       res.rand0 <- sapply(
-                      null.env.list,
+                      rand_y,
                       function(x){mamgllvm_select(
                                     object = object, 
-                                    data = x,
+                                    y = x,
                                     top_n = top_n
                                     )$importance})
     } else {
       res.rand0 <- sfSapply(
-                      null.env.list,
+                      rand_y,
                       function(x){mamgllvm_select(
                                     object = object, 
-                                    data = x,
+                                    y = x,
                                     top_n = top_n
                                     )$importance})
     }
@@ -113,15 +114,17 @@ ses.mglmn <- function(object, top_n = 5, par = FALSE, runs = 99){
 
 
 mamglm_select <- function(object, 
-                          data = NULL,
+                          y = NULL,
                           top_n = top_n) {
   
   models <- summary(object, top_n = top_n)[[1]]$models
   family <- object$family
+  data <- object$data
   rank <- attr(object, "rank")
-  y <- object$y
-   
-  if (is.null(data)) data  <- object$data 
+
+  if (is.null(y)) {
+    y <- object$y
+  }    
 
   n_par <- sapply(strsplit(models, "\\+"), length)
 
@@ -130,7 +133,7 @@ mamglm_select <- function(object,
   n_samp <- nrow(data)
   n_sp <- ncol(data)
   for (i in 1:top_n) {
-    f.str <- noquote(paste0(y, "~", models[i]))
+    f.str <- as.formula(paste("y", "~", models[i]))
     if (family == "gaussian") fit.temp <- manylm(f.str, data = data)
         else fit.temp <- manyglm(f.str, data = data, family = family)
 
@@ -186,7 +189,11 @@ mamglm_select <- function(object,
   res.temp <- res[, -1:-5]
   res2 <- apply(apply(res.temp, 2,
                       function(x)res[, paste(waic)] * x), 2, sum)
-  out <- list(res.table = res, importance = res2, family = family, y = y, data = data)
+  out <- list(res.table = res, 
+              importance = res2, 
+              family = family, 
+              y = y,  
+              data = data)
 
   structure(out, 
             class = "mglmn",
@@ -196,18 +203,20 @@ mamglm_select <- function(object,
 }
 
 mamgllvm_select <- function(object, 
-                          data = NULL,
+                          y = NULL,
                           top_n = top_n) {
   
   models <- summary(object, top_n = top_n)[[1]]$models
  
 
   family <- object$family
+  data <- object$data
   rank <- attr(object, "rank")
-  y <- object$y
-   
-  if (is.null(data)) data  <- object$data 
 
+  if (is.null(y)) {
+    y <- object$y
+  }    
+   
   n_par <- sapply(strsplit(models, "\\+"), length)
 
   model.aic <- NULL
@@ -215,13 +224,13 @@ mamgllvm_select <- function(object,
   n_samp <- nrow(data)
   n_sp <- ncol(data)
   for (i in 1:top_n) {
-    f.str <- make.formula2(y, models[i])
+    f.str <- make.formula2(models[i])
 
       fit_fun <- function(){
         gllvm(
-          y = get(y),
+          y = y,
           X = data, 
-          formula = formula(f.str),
+          formula = f.str,
           family = family,
           starting.val = "res")
       }
@@ -232,9 +241,9 @@ mamgllvm_select <- function(object,
       if (class(fit.temp) == "try-error") {
         message("Use starting.val = 'zero' instead of 'res'")
         fit.temp <- gllvm(
-          y = get(y),
+          y = y,
           X = data, 
-          formula = formula(f.str),
+          formula = f.str,
           family = family,
           starting.val = "zero")
       }
@@ -290,7 +299,13 @@ mamgllvm_select <- function(object,
   res.temp <- res[, -1:-5]
   res2 <- apply(apply(res.temp, 2,
                       function(x)res[, paste(waic)] * x), 2, sum)
-  out <- list(res.table = res, importance = res2, family = family, y = y, data = data)
+
+  out <- list(res.table = res, 
+              importance = res2, 
+              family = family, 
+              y = y,  
+              data = data)
+
   structure(out, 
             class = "mglmn",
             family = family,

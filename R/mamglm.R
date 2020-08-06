@@ -6,7 +6,7 @@
 #'
 #' @export
 #' @param data Data frame, typically of environmental variables. Rows for sites and colmuns for environmental variables.
-#' @param y Name of 'site x spcies matrix' (col for species, row for sites) (character)
+#' @param y Matrix,  site x spcies matrix (col or species, row for sites)
 #' @param family the 'family' object used.
 #' @param quadratic Whether to test quadratic responses (default = TRUE)
 #' @param scale Whether to scale independent variables (default = TRUE)
@@ -29,16 +29,18 @@
 #' freq.abs <- as.matrix(log(capcay$abund + 1))
 #'
 #' #to fit a gaussian regression model to frequency data:
-#' mamglm(data = env_assem, y = "freq.abs", family = "gaussian")
+#' mamglm(data = env_assem, y = freq.abs, family = "gaussian")
 #'
 #' #to fit a binomial regression model to presence/absence data"
 #' pre.abs0 <- capcay$abund
 #' pre.abs0[pre.abs0 > 0] = 1
 #' pre.abs <- as.matrix(pre.abs0)
 #'
-#' mamglm(data = env_assem, y = "pre.abs", family = "binomial")
-
+#' mamglm(data = env_assem, y = pre.abs, family = "binomial")
 mamglm <- function(data, y, family, quadratic = TRUE, scale = TRUE, rank = NULL){
+  
+  if (is.character(y)) 
+    stop("y should be a site x spcies matrix (col or species, row for sites).")
   
   if (is.null(rank)) rank <- "AICc"
   
@@ -52,7 +54,6 @@ mamglm <- function(data, y, family, quadratic = TRUE, scale = TRUE, rank = NULL)
     data_num <- data[, which(!sapply(data, function(x) {all(x %in% 0:1)}))]
   } else data_num <- data
   data_fct <- data[, which(sapply(data, is.factor))]
-  data_num <- data[, which(!sapply(data, function(x) {all(x %in% 0:1)}))]
   data_fct <- data[, which(sapply(data, is.factor))]
   # skip scaling for binary and factor data
   if (scale) data_num <- as.data.frame(scale(data_num))
@@ -65,7 +66,6 @@ mamglm <- function(data, y, family, quadratic = TRUE, scale = TRUE, rank = NULL)
     data <- cbind(data_dbl, data_dbl2, data_bi, data_fct)
   } else data <- cbind(data_dbl, data_bi, data_fct)
 
-  #print(data)
 
   my.vars <- colnames(data)
   n.vars <- length(my.vars)
@@ -96,16 +96,14 @@ mamglm <- function(data, y, family, quadratic = TRUE, scale = TRUE, rank = NULL)
       k <- k + 1
       vars.temp <- vars.list[[i]][, j]
       vars[[k]] <- vars.temp
-      f.str <- make.formula(y, vars.temp)
-  #    print(f.str)
+      f.str <- make.formula("y", vars.temp)
+     # print(f.str)
       if (family == "gaussian") fit.temp <- manylm(f.str, data = data)
       else fit.temp <- manyglm(f.str, data = data, family = family)
 
       log.L.temp <- logLik(fit.temp)
       log.L <- c(log.L, sum(log.L.temp))
        
-      yy <- as.numeric(get(y))
-#      R2.tmp <- 1 - sum((yy - fitted(fit.temp))^2) / sum((yy - mean(yy))^2)
       #R2.tmp <- sum((yy - fitted(fit.temp))^2 /  mean(yy)) / length(yy)
       #R2 <- c(R2, R2.tmp)
 
@@ -164,7 +162,13 @@ mamglm <- function(data, y, family, quadratic = TRUE, scale = TRUE, rank = NULL)
   res.temp <- res[, -1:-5]
   res2 <- apply(apply(res.temp, 2,
                       function(x)res[, paste(waic)] * x), 2, sum)
-  out <- list(res.table = res, importance = res2, family = family, y = y, data = data)
+
+  out <- list(res.table = res, 
+              importance = res2, 
+              family = family, 
+              y = y,  
+              data = data)
+
   structure(out, 
             class = "mglmn",
             family = family,

@@ -6,7 +6,7 @@
 #'
 #' @export
 #' @param data Data frame, typically of environmental variables. Rows for sites and colmuns for environmental variables.
-#' @param y Name of 'site x spcies matrix' (col for species, row for sites) (character)
+#' @param y Matrix,  site x spcies matrix (col or species, row for sites)
 #' @param family the 'family' object used.
 #' @param quadratic Whether to test quadratic responses (default = TRUE)
 #' @param scale Whether to scale independent variables (default = TRUE)
@@ -35,15 +35,18 @@
 #' freq.abs <- mvabund(log(capcay$abund + 1))
 #'
 #' #to fit a gaussian regression model to frequency data:
-#' mamgllvm(data = env_assem, y = "freq.abs", family = "gaussian")
+#' mamgllvm(data = env_assem, y = freq.abs, family = "gaussian")
 #'
 #' #to fit a binomial regression model to presence/absence data"
 #' pre.abs0 <- capcay$abund
 #' pre.abs0[pre.abs0 > 0] = 1
 #' pre.abs <- mvabund(pre.abs0)
 #'
-#' mamgllvm(data = env_assem, y = "pre.abs", family = "binomial")
+#' mamgllvm(data = env_assem, y = pre.abs, family = "binomial")
 mamgllvm <- function(data, y, family, quadratic = TRUE, scale = TRUE, rank = NULL){
+
+  if (is.character(y)) 
+    stop("y should be a site x spcies matrix (col or species, row for sites).")
 
   if (!is.null(rank) && rank != "AIC" && rank != "AICc" && rank != "BIC" && 
       rank != "aic" && rank != "aicc" && rank != "bic") {
@@ -55,7 +58,6 @@ mamgllvm <- function(data, y, family, quadratic = TRUE, scale = TRUE, rank = NUL
     data_num <- data[, which(!sapply(data, function(x) {all(x %in% 0:1)}))]
   } else data_num <- data
   data_fct <- data[, which(sapply(data, is.factor))]
-  data_num <- data[, which(!sapply(data, function(x) {all(x %in% 0:1)}))]
   data_fct <- data[, which(sapply(data, is.factor))]
   # skip scaling for binary and factor data
   if (scale) data_num <- as.data.frame(scale(data_num))
@@ -96,16 +98,16 @@ mamgllvm <- function(data, y, family, quadratic = TRUE, scale = TRUE, rank = NUL
       vars.temp <- vars.list[[i]][, j]
       vars[[k]] <- vars.temp
       #f.str <- make.formula(get(y), vars.temp)
-      f.str <- make.formula2(y, vars.temp)
+      f.str <- make.formula2(vars.temp)
     # data2 <- data[, vars.temp]
       data2 <- as.data.frame(data[, vars.temp])
       colnames(data2) <- vars.temp
 
       fit_fun <- function(){
         gllvm(
-          y = get(y),
+          y = y,
           X = data, 
-          formula = formula(f.str),
+          formula = f.str,
           family = family,
           starting.val = "res")
       }
@@ -116,9 +118,9 @@ mamgllvm <- function(data, y, family, quadratic = TRUE, scale = TRUE, rank = NUL
       if (class(fit.temp) == "try-error") {
         message("Use starting.val = 'zero' instead of 'res'")
         fit.temp <- gllvm(
-          y = get(y),
+          y = y,
           X = data, 
-          formula = formula(f.str),
+          formula = f.str,
           family = family,
           starting.val = "zero")
       }
@@ -181,7 +183,11 @@ mamgllvm <- function(data, y, family, quadratic = TRUE, scale = TRUE, rank = NUL
   res.temp <- res[, -1:-5]
   res2 <- apply(apply(res.temp, 2,
                       function(x)res[, paste(waic)] * x), 2, sum)
-  out <- list(res.table = res, importance = res2, family = family, y = y, data = data)
+  out <- list(res.table = res, 
+              importance = res2, 
+              family = family, 
+              y = y,  
+              data = data)
   structure(out, 
             class = "mglmn",
             family = family,

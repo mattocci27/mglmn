@@ -14,7 +14,7 @@
 #' freq.abs <- as.matrix(log(capcay$abund + 1))
 #'
 #' #to fit a gaussian regression model to frequency data:
-#' res <- mamglm(data = env_assem, y = "freq.abs", family = "gaussian")
+#' res <- mamglm(data = env_assem, y = freq.abs, family = "gaussian")
 #' 
 #' best.vars(res)
 

@@ -25,8 +25,9 @@
 
 #' @importFrom utils head
 #' @importFrom mvabund manylm manyglm
+#' @importFrom picante randomizeMatrix
 #' @importFrom gllvm gllvm
 #' @import snowfall
-#' @importFrom stats glm logLik rnorm sd formula
+#' @importFrom stats glm logLik rnorm sd formula as.formula
 #' @importFrom utils combn
 NULL

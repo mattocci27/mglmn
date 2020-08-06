@@ -2,11 +2,11 @@ context("test-make-formula.R")
 
 test_that("make.formula works", {
 
-  model <- c("y1 ~ x1 + x2 + x3", "y2 ~ x1 + x2 + x3")
+  model <- as.formula("y1 ~ x1 + x2 + x3",  env = parent.frame())
 
   vars.temp <- paste0("x", 1:3)
-  y <- paste0("y", 1:2)
+  y <- paste0("y", 1)
   out <- make.formula(y, vars.temp)
 
-  expect_equal(out, noquote(model))
+  expect_equal(out, model)
 })
